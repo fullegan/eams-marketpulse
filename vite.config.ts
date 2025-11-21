@@ -10,6 +10,8 @@ export default defineConfig(({ mode }) => {
   // We check process.env first, then fallback to the loaded env file.
   const apiKey = process.env.API_KEY || env.API_KEY;
 
+  console.log(`[Vite Config] Loading API_KEY from environment... Success: ${!!apiKey}`);
+
   return {
     plugins: [react()],
     define: {
