@@ -3,15 +3,18 @@ import type { GroundingChunk } from '../types';
 import { getCurrentQuarterInfo } from '../utils';
 import { getCurrentMarket } from '../config';
 
+// Use standard Vite environment variable access
+const apiKey = import.meta.env.VITE_API_KEY;
+
 // Debugging: Log if the key is present (do not log the actual key for security)
-if (!process.env.API_KEY) {
-  console.error("CRITICAL: process.env.API_KEY is undefined or empty. The API call will fail.");
+if (!apiKey) {
+  console.error("CRITICAL: VITE_API_KEY is undefined. Please check your Vercel Environment Variables.");
 } else {
   console.log("System: API Key is present.");
 }
 
 // We only need a single instance of the AI client.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+const ai = new GoogleGenAI({ apiKey: apiKey || '' });
 
 export const fetchVerticalInsights = async (vertical: string): Promise<{ text: string, sources: GroundingChunk[] }> => {
   try {
@@ -83,15 +86,20 @@ export const fetchVerticalInsights = async (vertical: string): Promise<{ text: s
     console.error("Error fetching insights from Gemini API:", error);
     
     let errorMessage = `Failed to retrieve insights for ${vertical}.`;
+    const errorString = error.toString().toLowerCase() + (error.message || '').toLowerCase();
     
-    if (!process.env.API_KEY) {
-      errorMessage += " Reason: API Key is missing.";
-    } else if (error.message?.includes('403') || error.message?.includes('401')) {
-      errorMessage += " Reason: Invalid API Key or permissions.";
-    } else if (error.message?.includes('Failed to fetch')) {
+    if (!apiKey) {
+      errorMessage += " Reason: API Key is missing (VITE_API_KEY undefined).";
+    } else if (errorString.includes('api has not been used') || errorString.includes('is disabled')) {
+      errorMessage += " Reason: The Generative AI API is disabled for this Google Cloud Project. Please enable it in the Google Cloud Console.";
+    } else if (errorString.includes('403') || errorString.includes('permission_denied')) {
+      errorMessage += " Reason: Invalid API Key or permissions denied.";
+    } else if (errorString.includes('401')) {
+      errorMessage += " Reason: Invalid API Key.";
+    } else if (errorString.includes('failed to fetch')) {
       errorMessage += " Reason: Network error. Check firewall or connection.";
     } else {
-        errorMessage += " Please check your API key and network connection.";
+      errorMessage += " Please check your API key and network connection.";
     }
 
     throw new Error(errorMessage);
