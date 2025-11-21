@@ -4,12 +4,12 @@ import { getCurrentQuarterInfo } from '../utils';
 import { getCurrentMarket } from '../config';
 
 // Use standard Vite environment variable access.
-// Note: This value is injected by vite.config.ts during build.
+// Note: This value is injected by vite.config.ts during build via the 'define' property.
 const apiKey = import.meta.env.VITE_API_KEY;
 
 // Debugging: Log status to console (never log the actual key)
 if (!apiKey) {
-  console.error("CRITICAL: API Key is missing. The app will not function.");
+  console.error("CRITICAL: API Key is missing (Empty String). The app will not function.");
 } else {
   console.log("System: API Key is present and configured.");
 }
@@ -21,7 +21,7 @@ export const fetchVerticalInsights = async (vertical: string): Promise<{ text: s
   try {
     // Fail fast if no key is present to avoid unnecessary network calls
     if (!apiKey) {
-      throw new Error("API Key is missing (VITE_API_KEY is empty).");
+      throw new Error("API Key is missing (VITE_API_KEY is empty). Please check Vercel Environment Variables.");
     }
 
     const { currentQuarter, nextQuarter, currentYear, nextQuarterYear } = getCurrentQuarterInfo();

@@ -4,12 +4,11 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
-  // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
   const env = loadEnv(mode, process.cwd(), '');
   
-  // Robustly check for the key in various common formats.
-  // This allows the app to work whether you named it VITE_API_KEY or just API_KEY in Vercel.
-  const apiKey = env.VITE_API_KEY || env.API_KEY;
+  // AGGRESSIVE SEARCH: Check Vercel system variables (process.env) AND loaded .env files.
+  // This prioritizes system variables set in the Vercel UI.
+  const apiKey = process.env.API_KEY || process.env.VITE_API_KEY || env.API_KEY || env.VITE_API_KEY;
 
   if (apiKey) {
      console.log("Build: API Key detected and injected successfully.");
