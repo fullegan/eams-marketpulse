@@ -3,14 +3,15 @@ import type { GroundingChunk } from '../types';
 import { getCurrentQuarterInfo } from '../utils';
 import { getCurrentMarket } from '../config';
 
-// Use standard Vite environment variable access
+// Use standard Vite environment variable access.
+// Note: This value is injected by vite.config.ts during build.
 const apiKey = import.meta.env.VITE_API_KEY;
 
-// Debugging: Log if the key is present (do not log the actual key for security)
+// Debugging: Log status to console (never log the actual key)
 if (!apiKey) {
-  console.error("CRITICAL: VITE_API_KEY is undefined. Please check your Vercel Environment Variables.");
+  console.error("CRITICAL: API Key is missing. The app will not function.");
 } else {
-  console.log("System: API Key is present.");
+  console.log("System: API Key is present and configured.");
 }
 
 // We only need a single instance of the AI client.
@@ -18,6 +19,11 @@ const ai = new GoogleGenAI({ apiKey: apiKey || '' });
 
 export const fetchVerticalInsights = async (vertical: string): Promise<{ text: string, sources: GroundingChunk[] }> => {
   try {
+    // Fail fast if no key is present to avoid unnecessary network calls
+    if (!apiKey) {
+      throw new Error("API Key is missing (VITE_API_KEY is empty).");
+    }
+
     const { currentQuarter, nextQuarter, currentYear, nextQuarterYear } = getCurrentQuarterInfo();
     const market = getCurrentMarket();
     
@@ -89,13 +95,13 @@ export const fetchVerticalInsights = async (vertical: string): Promise<{ text: s
     const errorString = error.toString().toLowerCase() + (error.message || '').toLowerCase();
     
     if (!apiKey) {
-      errorMessage += " Reason: API Key is missing (VITE_API_KEY undefined).";
+      errorMessage += " Reason: API Key is missing. Please check Vercel Environment Variables.";
     } else if (errorString.includes('api has not been used') || errorString.includes('is disabled')) {
       errorMessage += " Reason: The Generative AI API is disabled for this Google Cloud Project. Please enable it in the Google Cloud Console.";
     } else if (errorString.includes('403') || errorString.includes('permission_denied')) {
-      errorMessage += " Reason: Invalid API Key or permissions denied.";
+      errorMessage += " Reason: Invalid API Key or permissions denied (403).";
     } else if (errorString.includes('401')) {
-      errorMessage += " Reason: Invalid API Key.";
+      errorMessage += " Reason: Invalid API Key (401).";
     } else if (errorString.includes('failed to fetch')) {
       errorMessage += " Reason: Network error. Check firewall or connection.";
     } else {
