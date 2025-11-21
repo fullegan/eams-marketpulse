@@ -1,17 +1,25 @@
-
 import { GoogleGenAI } from "@google/genai";
 import type { GroundingChunk } from '../types';
 import { getCurrentQuarterInfo } from '../utils';
 import { getCurrentMarket } from '../config';
 
+// Debugging: Log if the key is present (do not log the actual key for security)
+if (!process.env.API_KEY) {
+  console.error("CRITICAL: process.env.API_KEY is undefined or empty. The API call will fail.");
+} else {
+  console.log("System: API Key is present.");
+}
+
 // We only need a single instance of the AI client.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
 
 export const fetchVerticalInsights = async (vertical: string): Promise<{ text: string, sources: GroundingChunk[] }> => {
   try {
     const { currentQuarter, nextQuarter, currentYear, nextQuarterYear } = getCurrentQuarterInfo();
     const market = getCurrentMarket();
     
+    console.log(`Fetching insights for: ${vertical} (${market.code})...`);
+
     const prompt = `
       As an expert e-commerce analyst for the ${market.name} market, provide a detailed and professionally formatted report for sellers on the ${market.platformName} for the "${vertical}" vertical. The report must be written in ${market.language}.
 
@@ -68,10 +76,24 @@ export const fetchVerticalInsights = async (vertical: string): Promise<{ text: s
         }
       }
     }
-
+    
+    console.log("Insights successfully retrieved.");
     return { text, sources };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching insights from Gemini API:", error);
-    throw new Error(`Failed to retrieve insights for ${vertical}. Please check your API key and network connection.`);
+    
+    let errorMessage = `Failed to retrieve insights for ${vertical}.`;
+    
+    if (!process.env.API_KEY) {
+      errorMessage += " Reason: API Key is missing.";
+    } else if (error.message?.includes('403') || error.message?.includes('401')) {
+      errorMessage += " Reason: Invalid API Key or permissions.";
+    } else if (error.message?.includes('Failed to fetch')) {
+      errorMessage += " Reason: Network error. Check firewall or connection.";
+    } else {
+        errorMessage += " Please check your API key and network connection.";
+    }
+
+    throw new Error(errorMessage);
   }
 };
