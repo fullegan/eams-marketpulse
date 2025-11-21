@@ -7,7 +7,6 @@ interface ContentDisplayProps {
   result: ApiResult | null;
   error: string | null;
   vertical: string | null; // Allow null for initial state
-  marketName: string;
   onUpdateReport: () => void;
 }
 
@@ -170,7 +169,7 @@ const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: b
 }
 
 
-export const ContentDisplay: React.FC<ContentDisplayProps> = ({ isLoading, result, error, vertical, marketName, onUpdateReport }) => {
+export const ContentDisplay: React.FC<ContentDisplayProps> = ({ isLoading, result, error, vertical, onUpdateReport }) => {
     const renderContent = () => {
         // Show full page loader ONLY if we are loading AND have no previous data to show.
         if (isLoading && !result) {

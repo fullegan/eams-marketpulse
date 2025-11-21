@@ -70,7 +70,6 @@ const App: React.FC = () => {
         result={currentResult}
         error={error}
         vertical={selectedVertical}
-        marketName={currentMarket.name}
         onUpdateReport={handleUpdateReport}
       />
     </div>

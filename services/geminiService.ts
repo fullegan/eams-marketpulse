@@ -50,10 +50,24 @@ export const fetchVerticalInsights = async (vertical: string): Promise<{ text: s
       },
     });
 
-    const text = response.text;
+    const text = response.text || "No content generated.";
     const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
 
-    const sources: GroundingChunk[] = groundingChunks.filter(chunk => chunk.web && chunk.web.uri);
+    // Clean and map the sources to ensure they match the strict GroundingChunk type.
+    const sources: GroundingChunk[] = [];
+
+    if (groundingChunks) {
+      for (const chunk of groundingChunks) {
+        if (chunk.web && chunk.web.uri) {
+          sources.push({
+            web: {
+              uri: chunk.web.uri,
+              title: chunk.web.title || chunk.web.uri // Ensure title is a string
+            }
+          });
+        }
+      }
+    }
 
     return { text, sources };
   } catch (error) {
