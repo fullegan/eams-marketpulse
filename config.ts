@@ -2,7 +2,7 @@ import type { MarketConfig } from './types';
 
 export const MARKETS: MarketConfig[] = [
   { 
-    name: 'the United Kingdom', 
+    name: 'UK', 
     code: 'UK', 
     platformName: 'the eBay.co.uk platform',
     language: 'English',
