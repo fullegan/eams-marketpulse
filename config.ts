@@ -39,14 +39,19 @@ export const MARKETS: MarketConfig[] = [
   },
 ];
 
-// --- TO CREATE A NEW COUNTRY VERSION, CHANGE THIS CODE ---
-export const CURRENT_MARKET_CODE: MarketConfig['code'] = 'UK';
-// ---------------------------------------------------------
+// --- DYNAMIC MARKET CONFIGURATION ---
+// We check if an Environment Variable is set (e.g., in Vercel).
+// If not found, we default to 'UK' for local development.
+const envCode = import.meta.env.VITE_MARKET_CODE;
+export const CURRENT_MARKET_CODE: MarketConfig['code'] = (envCode as MarketConfig['code']) || 'UK';
+// ------------------------------------
 
 export const getCurrentMarket = (): MarketConfig => {
   const market = MARKETS.find(m => m.code === CURRENT_MARKET_CODE);
   if (!market) {
-    throw new Error(`Market configuration for code "${CURRENT_MARKET_CODE}" not found.`);
+    // Fallback to UK if an invalid code was provided in the environment
+    console.warn(`Market configuration for code "${CURRENT_MARKET_CODE}" not found. Falling back to UK.`);
+    return MARKETS.find(m => m.code === 'UK')!;
   }
   return market;
 };
