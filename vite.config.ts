@@ -15,13 +15,16 @@ export default defineConfig(({ mode }) => {
   console.log("========================================================");
   
   // 1. Identify the Vercel Project
-  const projectTitle = process.env.VERCEL_PROJECT_TITLE || "Unknown (Not Vercel?)";
+  // Vercel exposes VERCEL_PROJECT_NAME in the build environment
+  const projectName = process.env.VERCEL_PROJECT_NAME || "Unknown (Not Vercel?)";
+  const repoSlug = process.env.VERCEL_GIT_REPO_SLUG || "Unknown Repo";
   const vercelEnv = process.env.VERCEL_ENV || "local/unknown";
-  console.log(`TARGET PROJECT: ${projectTitle}`);
-  console.log(`TARGET ENVIRONMENT: ${vercelEnv}`);
+  
+  console.log(`TARGET PROJECT NAME: ${projectName}`);
+  console.log(`TARGET REPO:         ${repoSlug}`);
+  console.log(`TARGET ENVIRONMENT:  ${vercelEnv}`);
   
   // 2. List ALL available Environment Variable Names (Keys only, for security)
-  // This helps us see if we are in the "Wrong Project" or if keys are named differently.
   const allKeys = [...Object.keys(process.env), ...Object.keys(env)];
   const distinctKeys = [...new Set(allKeys)].sort();
   
@@ -40,7 +43,7 @@ export default defineConfig(({ mode }) => {
      console.log(`✅ SUCCESS: API Key found and will be injected! (${maskedKey})`);
   } else {
      console.error("❌ CRITICAL FAILURE: No API Key found.");
-     console.error("   Action: Check Vercel Dashboard > Settings > Environment Variables for project: " + projectTitle);
+     console.error("   Action: Check Vercel Dashboard > Settings > Environment Variables for project: " + projectName);
   }
   console.log("========================================================\n");
   // --- DIAGNOSTIC LOGGING END ---
