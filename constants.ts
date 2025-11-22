@@ -41,7 +41,16 @@ const TRANSLATIONS_DE: UiTranslations = {
     "Sport",
     "Sammeln & Seltenes",
     "Medien"
-  ]
+  ],
+  // Report Headings
+  sectionExecutiveSummary: "Management Summary",
+  sectionMarketHealth: "Aktuelle Marktlage & Trends",
+  sectionSeasonalDemand: "Saisonale Nachfrageschwankungen",
+  sectionBuyerInfluencers: "Wichtige Einflussfaktoren für Käufer",
+  sectionKeyTakeaways: "Wichtige Erkenntnisse & Handlungsempfehlungen",
+  sectionKeywords: "Top-Keywords für eBay-Angebote",
+  sectionCurrentQuarter: "Aktuelles Quartal",
+  sectionLookAhead: "Ausblick auf"
 };
 
 // Translations for French (FR)
@@ -70,7 +79,16 @@ const TRANSLATIONS_FR: UiTranslations = {
     "Sports & Vacances",
     "Collections",
     "Médias"
-  ]
+  ],
+  // Report Headings
+  sectionExecutiveSummary: "Synthèse",
+  sectionMarketHealth: "Santé Actuelle du Marché & Tendances",
+  sectionSeasonalDemand: "Variations Saisonnières de la Demande",
+  sectionBuyerInfluencers: "Facteurs Clés d'Influence des Acheteurs",
+  sectionKeyTakeaways: "Points Clés & Conseils Pratiques",
+  sectionKeywords: "Mots-clés Principaux pour les Annonces eBay",
+  sectionCurrentQuarter: "Trimestre Actuel",
+  sectionLookAhead: "Perspectives pour"
 };
 
 // Translations for Italian (IT)
@@ -99,7 +117,16 @@ const TRANSLATIONS_IT: UiTranslations = {
     "Sport e Viaggi",
     "Collezionismo",
     "Film e DVD"
-  ]
+  ],
+  // Report Headings
+  sectionExecutiveSummary: "Sintesi",
+  sectionMarketHealth: "Salute Attuale del Mercato e Tendenze",
+  sectionSeasonalDemand: "Variazioni Stagionali della Domanda",
+  sectionBuyerInfluencers: "Fattori Chiave di Influenza sugli Acquirenti",
+  sectionKeyTakeaways: "Punti Chiave e Consigli Pratici",
+  sectionKeywords: "Parole Chiave Principali per le Inserzioni eBay",
+  sectionCurrentQuarter: "Trimestre Attuale",
+  sectionLookAhead: "Prospettive per"
 };
 
 // Default English (UK, US, AU)
@@ -116,7 +143,16 @@ const TRANSLATIONS_EN: UiTranslations = {
   updateButton: "Update Report",
   sourcesTitle: "Sources",
   footerText: "Powered by",
-  verticals: MASTER_VERTICALS_EN
+  verticals: MASTER_VERTICALS_EN,
+  // Report Headings
+  sectionExecutiveSummary: "Executive Summary",
+  sectionMarketHealth: "Current Market Health & Trends",
+  sectionSeasonalDemand: "Seasonal Demand Variations",
+  sectionBuyerInfluencers: "Key Buyer Influencers",
+  sectionKeyTakeaways: "Key Takeaways & Actionable Advice",
+  sectionKeywords: "Top Keywords for eBay Listings",
+  sectionCurrentQuarter: "Current Quarter",
+  sectionLookAhead: "Look Ahead to"
 };
 
 // Helper to get the correct translation set

@@ -32,4 +32,14 @@ export interface UiTranslations {
   sourcesTitle: string;
   footerText: string;
   verticals: string[]; // The list of categories in the local language
+
+  // Report Section Headings
+  sectionExecutiveSummary: string;
+  sectionMarketHealth: string;
+  sectionSeasonalDemand: string;
+  sectionBuyerInfluencers: string;
+  sectionKeyTakeaways: string;
+  sectionKeywords: string;
+  sectionCurrentQuarter: string;
+  sectionLookAhead: string;
 }

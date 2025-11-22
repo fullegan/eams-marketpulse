@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import type { GroundingChunk } from '../types';
 import { getCurrentQuarterInfo } from '../utils';
 import { getCurrentMarket } from '../config';
+import { getTranslations } from '../constants';
 
 // Use standard Vite environment variable access.
 // Note: This value is injected by vite.config.ts during build via the 'define' property.
@@ -27,35 +28,38 @@ export const fetchVerticalInsights = async (vertical: string): Promise<{ text: s
     const { currentQuarter, nextQuarter, currentYear, nextQuarterYear } = getCurrentQuarterInfo();
     const market = getCurrentMarket();
     
+    // Retrieve localized structure for the prompt
+    const t = getTranslations(market.code);
+    
     console.log(`Fetching insights for: ${vertical} (${market.code})...`);
 
     const prompt = `
       As an expert e-commerce analyst for the ${market.name} market, provide a detailed and professionally formatted report for sellers on the ${market.platformName} for the "${vertical}" vertical. The report must be written in ${market.language}.
 
-      The report must follow this exact Markdown structure:
+      The report must follow this exact Markdown structure using the following headings:
 
-      ## Executive Summary
+      ## ${t.sectionExecutiveSummary}
       (A brief, high-level overview of the vertical's current state and key opportunities.)
 
-      ## Current Market Health & Trends
+      ## ${t.sectionMarketHealth}
       (Detailed analysis of the vertical's health, growth areas, declining segments, and recent consumer trends.)
 
-      ## Seasonal Demand Variations
+      ## ${t.sectionSeasonalDemand}
       (Identify key seasonal peaks and troughs. Provide actionable advice for sellers.)
 
-      ## Key Buyer Influencers
+      ## ${t.sectionBuyerInfluencers}
       (Analysis of the most important purchasing factors for customers, e.g., price, brand, quality, shipping.)
 
-      ## Key Takeaways & Actionable Advice
+      ## ${t.sectionKeyTakeaways}
       (A bulleted list of concrete, actionable recommendations for stocking, pricing, and promotional strategies.)
 
-      ## Top Keywords for eBay Listings
+      ## ${t.sectionKeywords}
       (A bulleted list of the top 10-15 relevant keywords that sellers should include in their eBay listings to improve visibility.)
 
-      ### Current Quarter (Q${currentQuarter} ${currentYear})
+      ### ${t.sectionCurrentQuarter} (Q${currentQuarter} ${currentYear})
       (Comment on specific items expected to surge or decline in demand *right now*.)
 
-      ### Look Ahead to Q${nextQuarter} ${nextQuarterYear}
+      ### ${t.sectionLookAhead} Q${nextQuarter} ${nextQuarterYear}
       (Provide a forecast and preparation advice for the upcoming quarter.)
     `;
 
