@@ -7,27 +7,43 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   
   // Check all possible locations for the key.
-  // Vercel often exposes system variables in process.env, while local development uses the 'env' object.
   const apiKey = process.env.API_KEY || process.env.VITE_API_KEY || env.API_KEY || env.VITE_API_KEY;
 
-  // Detailed Logging for Vercel Build Logs
-  console.log("------------------------------------------------");
-  console.log("eAMS Build Config - Environment Variable Check:");
+  // --- DIAGNOSTIC LOGGING START ---
+  console.log("\n========================================================");
+  console.log("eAMS DIAGNOSTIC BUILD LOG");
+  console.log("========================================================");
+  
+  // 1. Identify the Vercel Project
+  const projectTitle = process.env.VERCEL_PROJECT_TITLE || "Unknown (Not Vercel?)";
+  const vercelEnv = process.env.VERCEL_ENV || "local/unknown";
+  console.log(`TARGET PROJECT: ${projectTitle}`);
+  console.log(`TARGET ENVIRONMENT: ${vercelEnv}`);
+  
+  // 2. List ALL available Environment Variable Names (Keys only, for security)
+  // This helps us see if we are in the "Wrong Project" or if keys are named differently.
+  const allKeys = [...Object.keys(process.env), ...Object.keys(env)];
+  const distinctKeys = [...new Set(allKeys)].sort();
+  
+  console.log("\nAVAILABLE ENVIRONMENT VARIABLES (Names Only):");
+  distinctKeys.forEach(key => {
+    // Highlight relevant keys
+    if (key.includes('API') || key.includes('KEY') || key.includes('VERCEL')) {
+        console.log(` -> ${key}`);
+    }
+  });
+
+  // 3. Final Verdict
+  console.log("\nAPI KEY STATUS:");
   if (apiKey) {
      const maskedKey = apiKey.substring(0, 5) + "..." + apiKey.substring(apiKey.length - 4);
-     console.log(`✅ SUCCESS: API Key found! (${maskedKey})`);
-     
-     // Log specifically where it was found to help debug
-     if (process.env.API_KEY) console.log("   - Found in: process.env.API_KEY (Vercel System Variable)");
-     if (process.env.VITE_API_KEY) console.log("   - Found in: process.env.VITE_API_KEY (Vercel System Variable)");
-     if (env.API_KEY && !process.env.API_KEY) console.log("   - Found in: .env file (API_KEY)");
-     if (env.VITE_API_KEY && !process.env.VITE_API_KEY) console.log("   - Found in: .env file (VITE_API_KEY)");
+     console.log(`✅ SUCCESS: API Key found and will be injected! (${maskedKey})`);
   } else {
-     console.error("❌ CRITICAL WARNING: No API Key detected in environment variables.");
-     console.error("   - Please check Vercel Settings > Environment Variables.");
-     console.error("   - Ensure 'Production', 'Preview', and 'Development' boxes are checked.");
+     console.error("❌ CRITICAL FAILURE: No API Key found.");
+     console.error("   Action: Check Vercel Dashboard > Settings > Environment Variables for project: " + projectTitle);
   }
-  console.log("------------------------------------------------");
+  console.log("========================================================\n");
+  // --- DIAGNOSTIC LOGGING END ---
 
   return {
     plugins: [react()],
