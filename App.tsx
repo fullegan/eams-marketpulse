@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { ContentDisplay } from './components/ContentDisplay';
@@ -76,22 +77,6 @@ const App: React.FC = () => {
         onUpdateReport={handleUpdateReport}
         translations={translations}
       />
-
-      {/* DEBUG FOOTER: Helps verify if the Market Code is being read correctly in production */}
-      <div className="fixed bottom-0 left-0 w-full bg-black text-white text-xs p-2 z-50 flex justify-between px-4 opacity-90 font-mono">
-        <span className="flex items-center gap-2">
-           <span className="text-gray-400">MARKET CODE:</span> 
-           <span className="font-bold text-green-400">{currentMarket.code}</span>
-        </span>
-        <span className="flex items-center gap-2">
-           <span className="text-gray-400">LANGUAGE:</span> 
-           <span className="font-bold">{currentMarket.language}</span>
-        </span>
-        <span className="flex items-center gap-2">
-           <span className="text-gray-400">TEST TRANSLATION:</span> 
-           <span className="font-bold text-yellow-300">{translations.verticals[0]}</span>
-        </span>
-      </div>
     </div>
   );
 };
