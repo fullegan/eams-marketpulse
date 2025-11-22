@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-// The new App Logo (Trending Up / Chart Line)
+// The new App Logo (Trending Up / Chart Line) - Used for Browser Tab / Favicon context if needed, or specific UI elements.
 export const ChartLineIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg 
     xmlns="http://www.w3.org/2000/svg" 
@@ -11,6 +11,16 @@ export const ChartLineIcon: React.FC<{ className?: string }> = ({ className }) =
   >
     <path d="M3 3V21H21V19H5V3H3Z" />
     <path d="M19.2929 6.70711L20.7071 8.12132L14 14.8284L10 10.8284L6.70711 14.1213L5.29289 12.7071L10 8L14 12L19.2929 6.70711Z" />
+  </svg>
+);
+
+// Official eAMS Brand Logo
+export const EamsLogo: React.FC<{ className?: string }> = ({ className }) => (
+  <svg viewBox="0 0 135 48" className={className} xmlns="http://www.w3.org/2000/svg" fill="none">
+    <text x="2" y="40" fontFamily="sans-serif" fontWeight="900" fontSize="44" fill="#E53238">e</text>
+    <text x="32" y="40" fontFamily="sans-serif" fontWeight="900" fontSize="44" fill="#0064D2">A</text>
+    <text x="66" y="40" fontFamily="sans-serif" fontWeight="900" fontSize="44" fill="#F5AF02">M</text>
+    <text x="106" y="40" fontFamily="sans-serif" fontWeight="900" fontSize="44" fill="#86B817">S</text>
   </svg>
 );
 

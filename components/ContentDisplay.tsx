@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import type { ApiResult, UiTranslations } from '../types';
-import { ChartLineIcon, LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon } from './Icons';
+import { ChartLineIcon, LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon, EamsLogo } from './Icons';
 
 interface ContentDisplayProps {
   isLoading: boolean;
@@ -29,7 +29,7 @@ const InitialState: React.FC<{ t: UiTranslations }> = ({ t }) => (
         <div className="flex-grow flex flex-col items-center justify-center">
             {/* Container for logo and title */}
             <div className="w-full max-w-sm flex flex-col items-center">
-                <ChartLineIcon className="w-32 h-32 text-primary-600 mb-4" />
+                <EamsLogo className="w-64 h-auto mb-4" />
                 <p className="text-3xl font-bold text-gray-800 uppercase tracking-widest">MARKETPULSE</p>
             </div>
 
