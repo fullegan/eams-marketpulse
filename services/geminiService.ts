@@ -1,3 +1,4 @@
+
 import { GoogleGenAI } from "@google/genai";
 import type { GroundingChunk } from '../types';
 import { getCurrentQuarterInfo } from '../utils';
@@ -18,7 +19,7 @@ if (!apiKey) {
 // We only need a single instance of the AI client.
 const ai = new GoogleGenAI({ apiKey: apiKey || '' });
 
-export const fetchVerticalInsights = async (vertical: string): Promise<{ text: string, sources: GroundingChunk[] }> => {
+export const fetchVerticalInsights = async (vertical: string, forceEnglish: boolean = false): Promise<{ text: string, sources: GroundingChunk[] }> => {
   try {
     // Fail fast if no key is present to avoid unnecessary network calls
     if (!apiKey) {
@@ -28,13 +29,15 @@ export const fetchVerticalInsights = async (vertical: string): Promise<{ text: s
     const { currentQuarter, nextQuarter, currentYear, nextQuarterYear } = getCurrentQuarterInfo();
     const market = getCurrentMarket();
     
-    // Retrieve localized structure for the prompt
-    const t = getTranslations(market.code);
+    // Logic: If forced to English, we use the 'UK' translations (which are English) for the headers
+    // and explicitly tell the AI to write in English.
+    const t = forceEnglish ? getTranslations('UK') : getTranslations(market.code);
+    const targetLanguage = forceEnglish ? 'English' : market.language;
     
-    console.log(`Fetching insights for: ${vertical} (${market.code})...`);
+    console.log(`Fetching insights for: ${vertical} (${market.code}). Language: ${targetLanguage}...`);
 
     const prompt = `
-      As an expert e-commerce analyst for the ${market.name} market, provide a detailed and professionally formatted report for sellers on the ${market.platformName} for the "${vertical}" vertical. The report must be written in ${market.language}.
+      As an expert e-commerce analyst for the ${market.name} market, provide a detailed and professionally formatted report for sellers on the ${market.platformName} for the "${vertical}" vertical. The report must be written in ${targetLanguage}.
 
       The report must follow this exact Markdown structure using the following headings:
 

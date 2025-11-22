@@ -1,14 +1,19 @@
+
 import React, { useState } from 'react';
 import type { ApiResult, UiTranslations } from '../types';
-import { EAMSLogo, LoadingSpinner, RefreshIcon, CopyIcon } from './Icons';
+import { ChartLineIcon, LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon } from './Icons';
 
 interface ContentDisplayProps {
   isLoading: boolean;
   result: ApiResult | null;
   error: string | null;
-  vertical: string | null; // Allow null for initial state
+  vertical: string | null; 
   onUpdateReport: () => void;
   translations: UiTranslations;
+  // New Props for Language Toggle
+  isEnglishMode: boolean;
+  onToggleLanguage: () => void;
+  marketCode: string;
 }
 
 const AppFooter: React.FC<{ text: string }> = ({ text }) => (
@@ -22,13 +27,12 @@ const AppFooter: React.FC<{ text: string }> = ({ text }) => (
 const InitialState: React.FC<{ t: UiTranslations }> = ({ t }) => (
     <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 p-8 animate-fade-in">
         <div className="flex-grow flex flex-col items-center justify-center">
-            {/* Container for logo and title to control their collective width */}
-            <div className="w-full max-w-sm">
-                <EAMSLogo className="w-full h-auto" /> {/* Logo will fill the container */}
-                <p className="text-3xl mt-2 font-bold text-gray-800 uppercase tracking-widest">MARKETPULSE</p>
+            {/* Container for logo and title */}
+            <div className="w-full max-w-sm flex flex-col items-center">
+                <ChartLineIcon className="w-32 h-32 text-primary-600 mb-4" />
+                <p className="text-3xl font-bold text-gray-800 uppercase tracking-widest">MARKETPULSE</p>
             </div>
 
-            {/* Restored welcome text */}
             <div className="mt-12 max-w-2xl">
                 <h2 className="text-2xl font-bold text-gray-700">{t.welcomeTitle}</h2>
                 <p className="mt-4 text-lg">
@@ -72,7 +76,6 @@ const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: b
 
     const renderFormattedText = (text: string) => {
         const lines = text.split('\n');
-        // FIX: Qualified JSX.Element with React.JSX.Element to resolve "Cannot find namespace 'JSX'" error.
         const elements: React.JSX.Element[] = [];
         let listItems: string[] = [];
     
@@ -108,7 +111,7 @@ const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: b
             }
         });
     
-        flushList(); // Ensure any trailing list is rendered
+        flushList(); 
     
         return elements;
     };
@@ -170,26 +173,42 @@ const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: b
 }
 
 
-export const ContentDisplay: React.FC<ContentDisplayProps> = ({ isLoading, result, error, vertical, onUpdateReport, translations }) => {
-    const renderContent = () => {
-        // Show full page loader ONLY if we are loading AND have no previous data to show.
-        if (isLoading && !result) {
-            return <LoadingState vertical={vertical!} message={translations.loadingMessage} />;
-        }
-        if (error) {
-            return <ErrorState error={error} title={translations.errorMessage} />;
-        }
-        // Show the report if we have data (even if we are loading a fresh version).
-        if (result && vertical) {
-            return <ReportDisplay result={result} vertical={vertical} isLoading={isLoading} onUpdateReport={onUpdateReport} t={translations} />;
-        }
-        // Show the initial welcome screen if no vertical is selected yet.
-        return <InitialState t={translations} />;
-    };
+export const ContentDisplay: React.FC<ContentDisplayProps> = ({ 
+    isLoading, result, error, vertical, onUpdateReport, translations, 
+    isEnglishMode, onToggleLanguage, marketCode 
+}) => {
+    
+    // Check if we should show the toggle button.
+    // We hide it for EN speaking native markets (UK, US, AU) as they don't need translation.
+    const showLanguageToggle = !['UK', 'US', 'AU'].includes(marketCode);
 
     return (
-        <main className="w-full md:w-3/4 lg:w-4/5 p-4 md:p-8 bg-slate-100 overflow-y-auto h-screen">
-           {renderContent()}
+        <main className="w-full md:w-3/4 lg:w-4/5 p-4 md:p-8 bg-slate-100 overflow-y-auto h-screen relative">
+           
+           {/* Language Toggle Button (Absolute positioned top-right) */}
+           {showLanguageToggle && (
+             <div className="absolute top-4 right-4 z-10">
+                <button 
+                    onClick={onToggleLanguage}
+                    className="flex items-center bg-white px-3 py-2 rounded-full shadow-sm border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary-600 transition-colors"
+                    title={isEnglishMode ? "Switch to Local Language" : "Switch to English"}
+                >
+                    <GlobeIcon className="w-4 h-4 mr-2 text-gray-500" />
+                    {isEnglishMode ? "Native" : "English"}
+                </button>
+             </div>
+           )}
+
+           {/* Render Logic */}
+           {isLoading && !result ? (
+                <LoadingState vertical={vertical!} message={translations.loadingMessage} />
+           ) : error ? (
+                <ErrorState error={error} title={translations.errorMessage} />
+           ) : result && vertical ? (
+                <ReportDisplay result={result} vertical={vertical} isLoading={isLoading} onUpdateReport={onUpdateReport} t={translations} />
+           ) : (
+                <InitialState t={translations} />
+           )}
         </main>
     );
 };

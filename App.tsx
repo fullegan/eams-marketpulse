@@ -12,25 +12,36 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [resultsCache, setResultsCache] = useState<Record<string, ApiResult>>({});
   const [error, setError] = useState<string | null>(null);
+  
+  // New State: English Translation Toggle
+  const [forceEnglish, setForceEnglish] = useState<boolean>(false);
+  
   const currentMarket = getCurrentMarket();
   
-  // Retrieve translations for the current market
-  const translations = useMemo(() => getTranslations(currentMarket.code), [currentMarket.code]);
+  // Retrieve translations. If forceEnglish is true, we load 'UK' (English) defaults regardless of market.
+  const translations = useMemo(() => {
+    return forceEnglish ? getTranslations('UK') : getTranslations(currentMarket.code);
+  }, [currentMarket.code, forceEnglish]);
 
   useEffect(() => {
     document.title = `eAMS Marketpulse | ${currentMarket.name}`;
   }, [currentMarket]);
 
-  const fetchInsightsForVertical = useCallback(async (vertical: string) => {
+  const fetchInsightsForVertical = useCallback(async (vertical: string, isEnglishMode: boolean) => {
     if (!vertical) return;
 
     setIsLoading(true);
     setError(null);
     try {
-      const data = await fetchVerticalInsights(vertical);
+      // Pass the isEnglishMode flag to the service
+      const data = await fetchVerticalInsights(vertical, isEnglishMode);
+      
+      // We key the cache by Vertical + Language to avoid showing German results in English mode
+      const cacheKey = `${vertical}-${isEnglishMode ? 'EN' : 'NATIVE'}`;
+      
       setResultsCache(prevCache => ({
         ...prevCache,
-        [vertical]: { ...data, lastUpdated: new Date() }
+        [cacheKey]: { ...data, lastUpdated: new Date() }
       }));
     } catch (e) {
       if (e instanceof Error) {
@@ -46,20 +57,38 @@ const App: React.FC = () => {
   const handleSelectVertical = (vertical: string) => {
     setSelectedVertical(vertical);
     setError(null);
-    // Fetch only if the data is not already in the cache.
-    if (!resultsCache[vertical]) {
-      fetchInsightsForVertical(vertical);
+    
+    const cacheKey = `${vertical}-${forceEnglish ? 'EN' : 'NATIVE'}`;
+    
+    // Fetch only if the data is not already in the cache for this specific language mode
+    if (!resultsCache[cacheKey]) {
+      fetchInsightsForVertical(vertical, forceEnglish);
     }
   };
   
   const handleUpdateReport = () => {
     // Always fetch when the update button is clicked.
     if (selectedVertical) {
-        fetchInsightsForVertical(selectedVertical);
+        fetchInsightsForVertical(selectedVertical, forceEnglish);
     }
   };
 
-  const currentResult = selectedVertical ? resultsCache[selectedVertical] : null;
+  // Toggle Language Handler
+  const handleToggleLanguage = () => {
+    const newMode = !forceEnglish;
+    setForceEnglish(newMode);
+    
+    // If we have a vertical selected, immediately re-fetch (or check cache) for the new language
+    if (selectedVertical) {
+        const cacheKey = `${selectedVertical}-${newMode ? 'EN' : 'NATIVE'}`;
+        if (!resultsCache[cacheKey]) {
+            fetchInsightsForVertical(selectedVertical, newMode);
+        }
+    }
+  };
+
+  const currentCacheKey = selectedVertical ? `${selectedVertical}-${forceEnglish ? 'EN' : 'NATIVE'}` : '';
+  const currentResult = selectedVertical ? resultsCache[currentCacheKey] : null;
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-slate-50 text-gray-800 pb-8">
@@ -76,6 +105,9 @@ const App: React.FC = () => {
         vertical={selectedVertical}
         onUpdateReport={handleUpdateReport}
         translations={translations}
+        isEnglishMode={forceEnglish}
+        onToggleLanguage={handleToggleLanguage}
+        marketCode={currentMarket.code}
       />
     </div>
   );

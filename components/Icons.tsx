@@ -1,31 +1,31 @@
 
 import React from 'react';
 
-// FIX: Renamed component to EAMSLogo to follow PascalCase convention for React components.
-export const EAMSLogo: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
+// The new App Logo (Trending Up / Chart Line)
+export const ChartLineIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
     className={className}
-    viewBox="0 0 180 50"
-    xmlns="http://www.w3.org/2000/svg"
-    preserveAspectRatio="xMidYMid meet"
   >
-    <text 
-      x="50%" 
-      y="50%" 
-      dominantBaseline="central"
-      textAnchor="middle"
-      fontFamily="Arial, Helvetica, sans-serif" 
-      fontSize="48" 
-      fontWeight="bold"
-    >
-      <tspan fill="#E53238">e</tspan>
-      <tspan fill="#0064D2">A</tspan>
-      <tspan fill="#F5AF02">M</tspan>
-      <tspan fill="#86B817">S</tspan>
-    </text>
+    <path d="M3 3V21H21V19H5V3H3Z" />
+    <path d="M19.2929 6.70711L20.7071 8.12132L14 14.8284L10 10.8284L6.70711 14.1213L5.29289 12.7071L10 8L14 12L19.2929 6.70711Z" />
   </svg>
 );
 
+export const GlobeIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    className={className}
+    fill="none" 
+    viewBox="0 0 24 24" 
+    stroke="currentColor" 
+    strokeWidth={2}
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
 
 export const LoadingSpinner: React.FC = () => (
   <svg

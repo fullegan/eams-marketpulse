@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>eAMS Market Insights</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2250%22 font-size=%2280%22 font-family=%22sans-serif%22 fill=%22%23E53238%22 text-anchor=%22middle%22 dominant-baseline=%22central%22 font-weight=%22bold%22>e</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%23E53238%22><path d=%22M3 3V21H21V19H5V3H3Z%22 /><path d=%22M19.2929 6.70711L20.7071 8.12132L14 14.8284L10 10.8284L6.70711 14.1213L5.29289 12.7071L10 8L14 12L19.2929 6.70711Z%22 /></svg>">
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script>
       tailwind.config = {
@@ -39,7 +40,7 @@
       }
     </script>
     <style>
-      /* Custom scrollbar for a cleaner look - last update */
+      /* Custom scrollbar for a cleaner look */
       ::-webkit-scrollbar {
         width: 8px;
       }
@@ -54,7 +55,18 @@
         background: #64748b;
       }
     </style>
-
+<script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1",
+    "vite": "https://aistudiocdn.com/vite@^7.2.4"
+  }
+}
+</script>
 </head>
   <body class="bg-slate-100">
     <div id="root"></div>
