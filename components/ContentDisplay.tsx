@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import type { ApiResult, UiTranslations } from '../types';
-import { ChartLineIcon, LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon, EamsLogo } from './Icons';
+import { LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon, EamsLogo } from './Icons';
 
 interface ContentDisplayProps {
   isLoading: boolean;
