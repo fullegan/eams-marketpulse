@@ -6,22 +6,29 @@ export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
   const env = loadEnv(mode, process.cwd(), '');
   
-  // AGGRESSIVE SEARCH: Check Vercel system variables (process.env) AND loaded .env files.
-  // This prioritizes system variables set in the Vercel UI.
+  // Check all possible locations for the key
   const apiKey = process.env.API_KEY || process.env.VITE_API_KEY || env.API_KEY || env.VITE_API_KEY;
 
+  // Detailed Logging for Vercel Build Logs
+  console.log("------------------------------------------------");
+  console.log("eAMS Build Config:");
   if (apiKey) {
-     console.log("Build: API Key detected and injected successfully.");
+     const maskedKey = apiKey.substring(0, 5) + "..." + apiKey.substring(apiKey.length - 4);
+     console.log(`✅ SUCCESS: API Key found! (${maskedKey})`);
+     
+     if (process.env.API_KEY) console.log("   - Source: process.env.API_KEY (Vercel System)");
+     if (process.env.VITE_API_KEY) console.log("   - Source: process.env.VITE_API_KEY (Vercel System)");
   } else {
-     console.warn("Build: WARNING - No API Key detected in environment variables.");
+     console.error("❌ CRITICAL WARNING: No API Key detected in environment variables.");
+     console.error("   - Please check Vercel Settings > Environment Variables.");
+     console.error("   - Ensure 'Production', 'Preview', and 'Development' boxes are checked.");
   }
+  console.log("------------------------------------------------");
 
   return {
     plugins: [react()],
     define: {
       // This "bakes" the key into the code at build time.
-      // It ensures import.meta.env.VITE_API_KEY always has a value (or empty string)
-      // preventing "undefined" errors in the browser.
       'import.meta.env.VITE_API_KEY': JSON.stringify(apiKey || ''),
     },
   };
