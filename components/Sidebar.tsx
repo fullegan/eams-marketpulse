@@ -1,5 +1,4 @@
 import React from 'react';
-// FIX: Updated import to use EAMSLogo, the PascalCase version of the component name.
 import { EAMSLogo } from './Icons';
 
 interface SidebarProps {

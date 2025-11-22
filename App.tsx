@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { ContentDisplay } from './components/ContentDisplay';
-import { ECOMMERCE_VERTICALS } from './constants';
+import { getTranslations } from './constants';
 import { fetchVerticalInsights } from './services/geminiService';
 import type { ApiResult } from './types';
 import { getCurrentMarket } from './config';
@@ -12,6 +12,9 @@ const App: React.FC = () => {
   const [resultsCache, setResultsCache] = useState<Record<string, ApiResult>>({});
   const [error, setError] = useState<string | null>(null);
   const currentMarket = getCurrentMarket();
+  
+  // Retrieve translations for the current market
+  const translations = useMemo(() => getTranslations(currentMarket.code), [currentMarket.code]);
 
   useEffect(() => {
     document.title = `eAMS Marketpulse | ${currentMarket.name}`;
@@ -60,7 +63,7 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-slate-50 text-gray-800">
       <Sidebar 
-        verticals={ECOMMERCE_VERTICALS}
+        verticals={translations.verticals}
         selectedVertical={selectedVertical}
         onSelectVertical={handleSelectVertical}
         isLoading={isLoading}
@@ -71,6 +74,7 @@ const App: React.FC = () => {
         error={error}
         vertical={selectedVertical}
         onUpdateReport={handleUpdateReport}
+        translations={translations}
       />
     </div>
   );

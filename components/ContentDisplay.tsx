@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { ApiResult } from '../types';
+import type { ApiResult, UiTranslations } from '../types';
 import { EAMSLogo, LoadingSpinner, RefreshIcon, CopyIcon } from './Icons';
 
 interface ContentDisplayProps {
@@ -8,17 +8,18 @@ interface ContentDisplayProps {
   error: string | null;
   vertical: string | null; // Allow null for initial state
   onUpdateReport: () => void;
+  translations: UiTranslations;
 }
 
-const AppFooter: React.FC = () => (
+const AppFooter: React.FC<{ text: string }> = ({ text }) => (
     <footer className="text-center py-4 mt-8">
         <p className="text-sm text-gray-500">
-            Powered by <span className="font-bold">eAMS</span>
+            {text} <span className="font-bold">eAMS</span>
         </p>
     </footer>
 );
 
-const InitialState: React.FC = () => (
+const InitialState: React.FC<{ t: UiTranslations }> = ({ t }) => (
     <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 p-8 animate-fade-in">
         <div className="flex-grow flex flex-col items-center justify-center">
             {/* Container for logo and title to control their collective width */}
@@ -29,36 +30,36 @@ const InitialState: React.FC = () => (
 
             {/* Restored welcome text */}
             <div className="mt-12 max-w-2xl">
-                <h2 className="text-2xl font-bold text-gray-700">Welcome to eAMS Marketpulse</h2>
+                <h2 className="text-2xl font-bold text-gray-700">{t.welcomeTitle}</h2>
                 <p className="mt-4 text-lg">
-                    This tool provides real-time market analysis and actionable insights for eBay verticals.
+                    {t.welcomeIntro}
                 </p>
                 <p className="mt-2 text-lg">
-                    To get started, please select a vertical from the menu on the left.
+                    {t.welcomeInstruction}
                 </p>
             </div>
         </div>
-        <AppFooter />
+        <AppFooter text={t.footerText} />
     </div>
 );
 
-const LoadingState: React.FC<{vertical: string}> = ({vertical}) => (
+const LoadingState: React.FC<{vertical: string, message: string}> = ({vertical, message}) => (
     <div className="flex flex-col items-center justify-center h-full text-center text-gray-600 p-8">
         <LoadingSpinner />
-        <p className="mt-4 text-lg">Fetching latest insights for</p>
+        <p className="mt-4 text-lg">{message}</p>
         <p className="text-lg font-semibold text-primary-700">{vertical}...</p>
     </div>
 );
 
-const ErrorState: React.FC<{error: string}> = ({error}) => (
+const ErrorState: React.FC<{error: string, title: string}> = ({error, title}) => (
     <div className="m-4 flex flex-col items-center justify-center text-center text-red-700 bg-red-100 border border-red-300 p-6 rounded-lg">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <h3 className="text-xl font-bold">An Error Occurred</h3>
+        <h3 className="text-xl font-bold">{title}</h3>
         <p className="mt-2">{error}</p>
     </div>
 );
 
-const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: boolean, onUpdateReport: () => void}> = ({ result, vertical, isLoading, onUpdateReport }) => {
+const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: boolean, onUpdateReport: () => void, t: UiTranslations}> = ({ result, vertical, isLoading, onUpdateReport, t }) => {
     const [isCopied, setIsCopied] = useState(false);
 
     const handleCopy = () => {
@@ -117,10 +118,10 @@ const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: b
             <div className="md:flex justify-between items-center mb-6">
                 <div>
                     <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900">
-                        {vertical} Market Report
+                        {vertical} {t.reportTitleSuffix}
                     </h1>
                     <p className="text-sm text-gray-500 mt-1">
-                        Last updated: {result.lastUpdated.toLocaleString()}
+                        {t.lastUpdated}: {result.lastUpdated.toLocaleString()}
                     </p>
                 </div>
                 <div className="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0">
@@ -129,7 +130,7 @@ const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: b
                         className="flex items-center justify-center px-4 py-2 bg-slate-600 text-white font-semibold rounded-lg shadow-md hover:bg-slate-700 transition-colors duration-200 disabled:bg-slate-300"
                     >
                        <CopyIcon className="w-5 h-5 mr-2" />
-                       {isCopied ? 'Copied!' : 'Copy Report'}
+                       {isCopied ? t.copiedButton : t.copyButton}
                     </button>
                     <button
                         onClick={onUpdateReport}
@@ -137,7 +138,7 @@ const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: b
                         className="flex items-center justify-center px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 transition-colors duration-200 disabled:bg-primary-300 disabled:cursor-not-allowed"
                     >
                        <RefreshIcon className={`w-5 h-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-                       Update Report
+                       {t.updateButton}
                     </button>
                 </div>
             </div>
@@ -148,7 +149,7 @@ const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: b
             
             {result.sources.length > 0 && (
                 <div className="mt-10">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">Sources</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-4">{t.sourcesTitle}</h2>
                     <div className="bg-white p-6 rounded-lg shadow-lg">
                         <ul className="space-y-3">
                             {result.sources.map((source, index) => (
@@ -163,27 +164,27 @@ const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: b
                     </div>
                 </div>
             )}
-            <AppFooter />
+            <AppFooter text={t.footerText} />
         </div>
     );
 }
 
 
-export const ContentDisplay: React.FC<ContentDisplayProps> = ({ isLoading, result, error, vertical, onUpdateReport }) => {
+export const ContentDisplay: React.FC<ContentDisplayProps> = ({ isLoading, result, error, vertical, onUpdateReport, translations }) => {
     const renderContent = () => {
         // Show full page loader ONLY if we are loading AND have no previous data to show.
         if (isLoading && !result) {
-            return <LoadingState vertical={vertical!} />;
+            return <LoadingState vertical={vertical!} message={translations.loadingMessage} />;
         }
         if (error) {
-            return <ErrorState error={error} />;
+            return <ErrorState error={error} title={translations.errorMessage} />;
         }
         // Show the report if we have data (even if we are loading a fresh version).
         if (result && vertical) {
-            return <ReportDisplay result={result} vertical={vertical} isLoading={isLoading} onUpdateReport={onUpdateReport} />;
+            return <ReportDisplay result={result} vertical={vertical} isLoading={isLoading} onUpdateReport={onUpdateReport} t={translations} />;
         }
         // Show the initial welcome screen if no vertical is selected yet.
-        return <InitialState />;
+        return <InitialState t={translations} />;
     };
 
     return (

@@ -17,3 +17,19 @@ export interface MarketConfig {
   platformName: string;
   language: string;
 }
+
+export interface UiTranslations {
+  welcomeTitle: string;
+  welcomeIntro: string;
+  welcomeInstruction: string;
+  loadingMessage: string;
+  errorMessage: string;
+  reportTitleSuffix: string;
+  lastUpdated: string;
+  copyButton: string;
+  copiedButton: string;
+  updateButton: string;
+  sourcesTitle: string;
+  footerText: string;
+  verticals: string[]; // The list of categories in the local language
+}
