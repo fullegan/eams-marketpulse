@@ -4,11 +4,11 @@ export const MARKETS: MarketConfig[] = [
   { 
     name: 'the United Kingdom', 
     code: 'UK', 
-    platformName: 'the eBay UK platform',
+    platformName: 'the eBay.co.uk platform',
     language: 'English',
   },
   { 
-    name: 'the United States', 
+    name: 'USA', 
     code: 'US', 
     platformName: 'the eBay.com platform',
     language: 'English',
