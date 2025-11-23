@@ -15,8 +15,9 @@ export const ChartLineIcon: React.FC<{ className?: string }> = ({ className }) =
 );
 
 // Official eAMS Brand Logo
+// Updated viewBox to 145 width to prevent clipping of the 'S' on wider system fonts
 export const EamsLogo: React.FC<{ className?: string }> = ({ className }) => (
-  <svg viewBox="0 0 135 48" className={className} xmlns="http://www.w3.org/2000/svg" fill="none">
+  <svg viewBox="0 0 145 48" className={className} xmlns="http://www.w3.org/2000/svg" fill="none">
     <text x="2" y="40" fontFamily="sans-serif" fontWeight="900" fontSize="44" fill="#E53238">e</text>
     <text x="32" y="40" fontFamily="sans-serif" fontWeight="900" fontSize="44" fill="#0064D2">A</text>
     <text x="66" y="40" fontFamily="sans-serif" fontWeight="900" fontSize="44" fill="#F5AF02">M</text>
