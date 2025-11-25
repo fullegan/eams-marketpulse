@@ -1,6 +1,4 @@
-
 import React from 'react';
-import { EamsLogo } from './Icons';
 
 interface SidebarProps {
   verticals: string[];
@@ -15,7 +13,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ verticals, selectedVertical, o
       <div className="text-center mb-8">
         <div className="inline-block"> {/* This container shrinks to fit the content width */}
           <div className="flex items-center justify-center mb-2">
-             <EamsLogo className="h-14 w-auto" />
+             <img 
+               src="/images/sidebar-menu.png" 
+               alt="eAMS Logo" 
+               className="h-14 w-auto object-contain" 
+             />
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-600 leading-tight whitespace-nowrap">Advertising Managed Services</p>
