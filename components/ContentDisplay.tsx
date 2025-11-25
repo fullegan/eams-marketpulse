@@ -33,7 +33,6 @@ const InitialState: React.FC<{ t: UiTranslations }> = ({ t }) => (
                     alt="eAMS Marketpulse" 
                     className="w-full h-auto mb-8 object-contain" 
                 />
-                <p className="text-3xl font-bold text-gray-800 uppercase tracking-widest">MARKETPULSE</p>
             </div>
 
             <div className="mt-12 max-w-2xl">

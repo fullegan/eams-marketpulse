@@ -12,16 +12,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ verticals, selectedVertical, o
     <aside className="w-full md:w-1/4 lg:w-1/5 bg-white p-4 md:p-6 shadow-lg md:h-screen md:sticky md:top-0 overflow-y-auto">
       <div className="text-center mb-8">
         <div className="inline-block"> {/* This container shrinks to fit the content width */}
-          <div className="flex items-center justify-center mb-2">
+          <div className="flex items-center justify-center">
              <img 
                src="/images/sidebar-menu.png" 
                alt="eAMS Logo" 
                className="h-28 w-auto object-contain" 
              />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-gray-600 leading-tight whitespace-nowrap">Advertising Managed Services</p>
-            <p className="text-xl font-bold text-gray-800 leading-tight uppercase tracking-wider">MARKETPULSE</p>
           </div>
         </div>
       </div>
