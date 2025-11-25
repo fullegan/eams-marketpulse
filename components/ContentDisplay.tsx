@@ -27,11 +27,11 @@ const InitialState: React.FC<{ t: UiTranslations }> = ({ t }) => (
     <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 p-8 animate-fade-in">
         <div className="flex-grow flex flex-col items-center justify-center">
             {/* Container for logo and title */}
-            <div className="w-full max-w-sm flex flex-col items-center">
+            <div className="w-full max-w-lg flex flex-col items-center">
                 <img 
                     src="/images/welcome-page.png" 
                     alt="eAMS Marketpulse" 
-                    className="w-64 h-auto mb-4 object-contain" 
+                    className="w-full h-auto mb-8 object-contain" 
                 />
                 <p className="text-3xl font-bold text-gray-800 uppercase tracking-widest">MARKETPULSE</p>
             </div>

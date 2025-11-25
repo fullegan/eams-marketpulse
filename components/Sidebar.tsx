@@ -16,7 +16,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ verticals, selectedVertical, o
              <img 
                src="/images/sidebar-menu.png" 
                alt="eAMS Logo" 
-               className="h-14 w-auto object-contain" 
+               className="h-28 w-auto object-contain" 
              />
           </div>
           <div>
