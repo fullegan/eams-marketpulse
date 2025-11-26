@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import type { ApiResult, UiTranslations } from '../types';
-import { LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon } from './Icons';
+import { LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon, EamsLogo } from './Icons';
 
 interface ContentDisplayProps {
   isLoading: boolean;
@@ -31,11 +32,11 @@ const InitialState: React.FC<{ t: UiTranslations }> = ({ t }) => (
                 <img 
                     src="/images/welcome-page.png" 
                     alt="eAMS Marketpulse" 
-                    className="w-full h-auto mb-8 object-contain" 
+                    className="w-full h-auto object-contain" 
                 />
             </div>
 
-            <div className="mt-12 max-w-2xl">
+            <div className="mt-4 max-w-2xl">
                 <h2 className="text-2xl font-bold text-gray-700">{t.welcomeTitle}</h2>
                 <p className="mt-4 text-lg">
                     {t.welcomeIntro}

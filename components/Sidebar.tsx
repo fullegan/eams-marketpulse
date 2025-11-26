@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface SidebarProps {
@@ -10,7 +11,7 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ verticals, selectedVertical, onSelectVertical, isLoading }) => {
   return (
     <aside className="w-full md:w-1/4 lg:w-1/5 bg-white p-4 md:p-6 shadow-lg md:h-screen md:sticky md:top-0 overflow-y-auto">
-      <div className="text-center mb-8">
+      <div className="text-center mb-2">
         <div className="inline-block"> {/* This container shrinks to fit the content width */}
           <div className="flex items-center justify-center">
              <img 
