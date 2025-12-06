@@ -10,8 +10,8 @@ UiTranslations } from
 import { 
 LoadingSpinner, RefreshIcon, 
 CopyIcon, GlobeIcon, 
-DownloadIcon } from 
-'./Icons';
+DownloadIcon, EamsLogo } 
+from './Icons';
 
 
 
@@ -72,8 +72,6 @@ InitialState({ t }: { t: UiTranslations }) {
     <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 p-8 animate-fade-in">
 
       <div className="flex-grow flex flex-col items-center justify-center">
-
-        {/* Container for logo and title */}
 
         <div className="w-full max-w-lg flex flex-col items-center">
 
@@ -204,8 +202,6 @@ ReportDisplay({
 
   const [isCopied, setIsCopied] = useState(false);
 
-  const [isDownloading, setIsDownloading] = useState(false);
-
 
 
   const handleCopy = () => {
@@ -229,30 +225,16 @@ ReportDisplay({
 
     const element = document.getElementById('report-container');
 
-    if (!element) 
-return;
-
-
-
-    setIsDownloading(true);
-
-
-
     const opt = {
 
-      margin: [10, 
-15, 15, 
-15],
+      margin: 10,
 
-      filename: `${marketCode}_${vertical.replace(/\s+/g,
-'_')}_Market_Report.pdf`,
+      filename: `${vertical}_Market_Report.pdf`,
 
       image: { type: 
 'jpeg', quality: 0.98 },
 
-      html2canvas: { scale: 2, useCORS:
-true, logging: 
-false },
+      html2canvas: { scale: 2 },
 
       jsPDF: { unit: 'mm', format:
 'a4', orientation: 
@@ -262,30 +244,18 @@ false },
 
 
 
-    // @ts-ignore
+    // Use type assertion to access html2pdf from window
 
-    if (window.html2pdf) {
+    if (typeof window !==
+'undefined' && (window 
+as any).html2pdf) {
 
-      // @ts-ignore
-
-      window.html2pdf().set(opt).from(element).save().then(() => {
-
-        setIsDownloading(false);
-
-      }).catch((err: 
-any) => {
-
-        console.error("PDF generation failed", err);
-
-        setIsDownloading(false);
-
-      });
+      (window as 
+any).html2pdf().set(opt).from(element).save();
 
     } else {
 
-      console.error("html2pdf library not loaded");
-
-      setIsDownloading(false);
+      alert('PDF generation library not loaded.');
 
     }
 
@@ -377,8 +347,6 @@ if (trimmedLine === '') {
 
     flushList();
 
-
-
     return elements;
 
   };
@@ -399,7 +367,7 @@ if (trimmedLine === '') {
 
           </h1>
 
-          <p className="text-sm text-gray-900 mt-1">
+          <p className="text-sm text-gray-900 mt-1 font-semibold">
 
             {t.lastUpdated}: {result.lastUpdated.toLocaleString()}
 
@@ -407,29 +375,11 @@ if (trimmedLine === '') {
 
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0" data-html2canvas-ignore="true">
+        
 
-          <button
+        {/* data-html2canvas-ignore ensures these buttons don't appear in the PDF */}
 
-            onClick={handleDownloadPDF}
-
-            disabled={isDownloading}
-
-            className="flex items-center justify-center px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-lg shadow-sm border border-slate-300 hover:bg-slate-200 transition-colors duration-200 disabled:opacity-50"
-
-            title={t.downloadButton}
-
-          >
-
-            <DownloadIcon className={`w-5 h-5 mr-2
-${isDownloading ? 'animate-bounce' :
-''}`} />
-
-            {t.downloadButton}
-
-          </button>
-
-
+        <div className="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0" data-html2canvas-ignore>
 
           <button
 
@@ -442,6 +392,20 @@ ${isDownloading ? 'animate-bounce' :
             <CopyIcon className="w-5 h-5 mr-2" />
 
             {isCopied ? t.copiedButton : t.copyButton}
+
+          </button>
+
+           <button
+
+            onClick={handleDownloadPDF}
+
+            className="flex items-center justify-center px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors duration-200"
+
+          >
+
+            <DownloadIcon className="w-5 h-5 mr-2" />
+
+            {t.downloadButton}
 
           </button>
 
@@ -481,7 +445,7 @@ ${isLoading ? 'animate-spin' :
 
         <div className="mt-10">
 
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t.sourcesTitle}</h2>
+          <h2 className="text-2xl font-bold text-black mb-4">{t.sourcesTitle}</h2>
 
           <div className="bg-white p-6 rounded-lg shadow-lg">
 
@@ -527,13 +491,25 @@ ${isLoading ? 'animate-spin' :
 export 
 function ContentDisplay({
 
-  isLoading, result, error, vertical, onUpdateReport, translations,
+  isLoading,
 
-  isEnglishMode, onToggleLanguage, marketCode
+  result,
+
+  error,
+
+  vertical,
+
+  onUpdateReport,
+
+  translations,
+
+  isEnglishMode,
+
+  onToggleLanguage,
+
+  marketCode
 
 }: ContentDisplayProps) {
-
-
 
   const showLanguageToggle = !['UK',
 'US', 
@@ -547,7 +523,7 @@ function ContentDisplay({
 
       {showLanguageToggle && (
 
-        <div className="absolute top-4 right-4 z-10" data-html2canvas-ignore="true">
+        <div className="absolute top-4 right-4 z-10">
 
           <button
 
