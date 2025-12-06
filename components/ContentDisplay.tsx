@@ -1,3 +1,6 @@
+
+
+
 import 
 React, { useState } from 
 'react';
@@ -10,8 +13,8 @@ UiTranslations } from
 import { 
 LoadingSpinner, RefreshIcon, 
 CopyIcon, GlobeIcon, 
-DownloadIcon, EamsLogo } 
-from './Icons';
+DownloadIcon } from 
+'./Icons';
 
 
 
@@ -81,7 +84,7 @@ InitialState({ t }: { t: UiTranslations }) {
 
             alt="eAMS Marketpulse"
 
-            className="w-full h-auto object-contain"
+            className="w-full h-auto object-contain mb-0"
 
           />
 
@@ -243,8 +246,6 @@ ReportDisplay({
     };
 
 
-
-    // Use type assertion to access html2pdf from window
 
     if (typeof window !==
 'undefined' && (window 
@@ -586,3 +587,6 @@ function ContentDisplay({
   );
 
 }
+
+
+
