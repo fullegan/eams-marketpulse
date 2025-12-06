@@ -105,7 +105,8 @@ function ReportDisplay({
       margin: [10, 10, 10, 10], // Top, Left, Bottom, Right
       filename: `${vertical}_Market_Report.pdf`,
       image: { type: 'jpeg', quality: 1.0 }, // Max quality
-      html2canvas: { scale: 3, useCORS: true }, // Higher scale for sharper text
+      // backgroundColor: '#ffffff' ensures the PDF has a white background, preventing grey headers
+      html2canvas: { scale: 3, useCORS: true, backgroundColor: '#ffffff' }, 
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
@@ -126,7 +127,7 @@ function ReportDisplay({
         elements.push(
           <ul key={`ul-${elements.length}`} className="list-disc space-y-2 pl-6 mb-4 text-black marker:text-black" style={{ color: '#000000' }}>
             {listItems.map((item, j) => (
-              <li key={j} className="ml-2 text-black font-medium" style={{ color: '#000000' }}>{item}</li>
+              <li key={j} className="ml-2 text-black font-semibold" style={{ color: '#000000' }}>{item}</li>
             ))}
           </ul>
         );
@@ -149,7 +150,8 @@ function ReportDisplay({
         flushList();
       } else {
         flushList();
-        elements.push(<p key={i} className="mb-4 text-black font-medium leading-relaxed" style={{ color: '#000000' }}>{trimmedLine}</p>);
+        // Using font-semibold here to combat PDF "thinning" effect
+        elements.push(<p key={i} className="mb-4 text-black font-semibold leading-relaxed" style={{ color: '#000000' }}>{trimmedLine}</p>);
       }
     });
 
@@ -159,7 +161,8 @@ function ReportDisplay({
 
   return (
     <div key={vertical} className="animate-fade-in" id="report-container">
-      <div className="md:flex justify-between items-center mb-6">
+      {/* We add p-4 here to ensure the PDF capture has padding around the title area when background is forced white */}
+      <div className="md:flex justify-between items-center mb-6 p-4 md:p-0">
         <div>
           <h1 className="text-3xl md:text-4xl font-extrabold text-black" style={{ color: '#000000' }}>
             {marketCode}: {vertical} {t.reportTitleSuffix}
@@ -196,16 +199,15 @@ function ReportDisplay({
         </div>
       </div>
 
-      {/* Removed prose classes to prevent color overriding. Added explicit black color style. */}
       <article 
-        className="max-w-none bg-white p-6 md:p-8 rounded-lg shadow-lg text-black font-medium text-lg leading-relaxed"
+        className="max-w-none bg-white p-6 md:p-8 rounded-lg shadow-lg text-black font-semibold text-lg leading-relaxed"
         style={{ color: '#000000' }}
       >
         {renderFormattedText(result.text)}
       </article>
 
       {result.sources.length > 0 && (
-        <div className="mt-10">
+        <div className="mt-10 p-4 md:p-0">
           <h2 className="text-2xl font-bold text-black mb-4" style={{ color: '#000000' }}>{t.sourcesTitle}</h2>
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <ul className="space-y-3">
@@ -273,3 +275,4 @@ export function ContentDisplay({
     </main>
   );
 }
+    
