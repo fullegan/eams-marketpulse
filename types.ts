@@ -29,6 +29,7 @@ export interface UiTranslations {
   copyButton: string;
   copiedButton: string;
   updateButton: string;
+  downloadButton: string; // New translation key
   sourcesTitle: string;
   footerText: string;
   verticals: string[]; // The list of categories in the local language

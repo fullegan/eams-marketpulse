@@ -27,6 +27,7 @@ const TRANSLATIONS_DE: UiTranslations = {
   copyButton: "Bericht kopieren",
   copiedButton: "Kopiert!",
   updateButton: "Bericht aktualisieren",
+  downloadButton: "PDF herunterladen",
   sourcesTitle: "Quellen",
   footerText: "Bereitgestellt von",
   verticals: [
@@ -65,6 +66,7 @@ const TRANSLATIONS_FR: UiTranslations = {
   copyButton: "Copier le rapport",
   copiedButton: "Copié !",
   updateButton: "Mettre à jour",
+  downloadButton: "Télécharger PDF",
   sourcesTitle: "Sources",
   footerText: "Propulsé par",
   verticals: [
@@ -103,6 +105,7 @@ const TRANSLATIONS_IT: UiTranslations = {
   copyButton: "Copia rapporto",
   copiedButton: "Copiato!",
   updateButton: "Aggiorna rapporto",
+  downloadButton: "Scarica PDF",
   sourcesTitle: "Fonti",
   footerText: "Offerto da",
   verticals: [
@@ -141,6 +144,7 @@ const TRANSLATIONS_EN: UiTranslations = {
   copyButton: "Copy Report",
   copiedButton: "Copied!",
   updateButton: "Update Report",
+  downloadButton: "Download PDF",
   sourcesTitle: "Sources",
   footerText: "Powered by",
   verticals: MASTER_VERTICALS_EN,
