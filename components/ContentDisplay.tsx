@@ -33,8 +33,6 @@ null;
 
   translations: UiTranslations;
 
-  // New Props for Language Toggle
-
   isEnglishMode: boolean;
 
   onToggleLanguage: () => void;
@@ -46,8 +44,7 @@ null;
 
 
 const 
-AppFooter: React.FC<{ text:
-string }> = ({ text }) => (
+AppFooter = ({ text }: { text: string }) => (
 
     <footer className="text-center py-4 mt-8">
 
@@ -64,8 +61,7 @@ string }> = ({ text }) => (
 
 
 const 
-InitialState: React.FC<{ t:
-UiTranslations }> = ({ t }) => (
+InitialState = ({ t }: { t: UiTranslations }) => (
 
     <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 p-8 animate-fade-in">
 
@@ -118,9 +114,8 @@ UiTranslations }> = ({ t }) => (
 
 
 const 
-LoadingState: React.FC<{vertical:
-string, message: 
-string}> = ({vertical, message}) => (
+LoadingState = ({ vertical, message }: { vertical: 
+string, message: string }) => (
 
     <div className="flex flex-col items-center justify-center h-full text-center text-gray-600 p-8">
 
@@ -137,9 +132,8 @@ string}> = ({vertical, message}) => (
 
 
 const 
-ErrorState: React.FC<{error:
-string, title: 
-string}> = ({error, title}) => (
+ErrorState = ({ error, title }: { error: 
+string, title: string }) => (
 
     <div className="m-4 flex flex-col items-center justify-center text-center text-red-700 bg-red-100 border border-red-300 p-6 rounded-lg">
 
@@ -158,11 +152,35 @@ string}> = ({error, title}) => (
 
 
 const 
-ReportDisplay: React.FC<{result:
-ApiResult, vertical: 
-string, isLoading: boolean, onUpdateReport: () =>
-void, t: 
-UiTranslations, marketCode: string}> = ({ result, vertical, isLoading, onUpdateReport, t, marketCode }) => {
+ReportDisplay = ({ 
+
+    result, 
+
+    vertical, 
+
+    isLoading, 
+
+    onUpdateReport, 
+
+    t, 
+
+    marketCode 
+
+}: { 
+
+    result: ApiResult, 
+
+    vertical: string, 
+
+    isLoading: boolean, 
+
+    onUpdateReport: () => void, 
+
+    t: UiTranslations, 
+
+    marketCode: string 
+
+}) => {
 
     const [isCopied, setIsCopied] = useState(false);
 
@@ -528,14 +546,13 @@ ${isLoading ? 'animate-spin' :
 
 
 export 
-const ContentDisplay: 
-React.FC<ContentDisplayProps> = ({
+const ContentDisplay = ({ 
 
     isLoading, result, error, vertical, onUpdateReport, translations, 
 
     isEnglishMode, onToggleLanguage, marketCode 
 
-}) => {
+}: ContentDisplayProps) => {
 
     
 
@@ -624,7 +641,3 @@ React.FC<ContentDisplayProps> = ({
     );
 
 };
-
-
-
-
