@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import type { ApiResult, UiTranslations } from '../types';
 import { LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon, DownloadIcon } from './Icons';
@@ -14,6 +13,26 @@ interface ContentDisplayProps {
   onToggleLanguage: () => void;
   marketCode: string;
 }
+
+// 1. New Helper: CSS specifically for the PDF generation to override Tailwind/Canvas issues
+const SpecificReportStyles = () => (
+  <style>{`
+    /* Force high contrast for the PDF container */
+    #report-container {
+      color: #000000 !important;
+      -webkit-font-smoothing: auto !important; /* Makes text thicker on canvas */
+    }
+    #report-container h1, 
+    #report-container h2, 
+    #report-container h3, 
+    #report-container p, 
+    #report-container li {
+      color: #000000 !important;
+      text-shadow: none !important; /* Shadows can blur text in PDFs */
+      opacity: 1 !important;
+    }
+  `}</style>
+);
 
 function AppFooter({ text }: { text: string }) {
   return (
@@ -102,11 +121,16 @@ function ReportDisplay({
   const handleDownloadPDF = () => {
     const element = document.getElementById('report-container');
     const opt = {
-      margin: [10, 10, 10, 10], // Top, Left, Bottom, Right
+      margin: [10, 10, 10, 10], 
       filename: `${vertical}_Market_Report.pdf`,
-      image: { type: 'jpeg', quality: 1.0 }, // Max quality
-      // backgroundColor: '#ffffff' ensures the PDF has a white background, preventing grey headers
-      html2canvas: { scale: 3, useCORS: true, backgroundColor: '#ffffff' }, 
+      image: { type: 'jpeg', quality: 1.0 }, 
+      // 2. Updated Config: Added letterRendering and increased scale to 4
+      html2canvas: { 
+        scale: 4, 
+        useCORS: true, 
+        backgroundColor: '#ffffff',
+        letterRendering: true, // Helps prevents letters from merging/blurring
+      }, 
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
@@ -125,9 +149,10 @@ function ReportDisplay({
     const flushList = () => {
       if (listItems.length > 0) {
         elements.push(
-          <ul key={`ul-${elements.length}`} className="list-disc space-y-2 pl-6 mb-4 text-black marker:text-black" style={{ color: '#000000' }}>
+          // Added font-medium specifically for list items
+          <ul key={`ul-${elements.length}`} className="list-disc space-y-2 pl-6 mb-4 text-black marker:text-black font-medium">
             {listItems.map((item, j) => (
-              <li key={j} className="ml-2 text-black font-semibold" style={{ color: '#000000' }}>{item}</li>
+              <li key={j} className="ml-2">{item}</li>
             ))}
           </ul>
         );
@@ -140,18 +165,19 @@ function ReportDisplay({
 
       if (trimmedLine.startsWith('### ')) {
         flushList();
-        elements.push(<h3 key={i} className="text-xl font-bold mt-6 mb-2 text-black" style={{ color: '#000000' }}>{trimmedLine.substring(4)}</h3>);
+        elements.push(<h3 key={i} className="text-xl font-bold mt-6 mb-2 text-black">{trimmedLine.substring(4)}</h3>);
       } else if (trimmedLine.startsWith('## ')) {
         flushList();
-        elements.push(<h2 key={i} className="text-2xl font-extrabold mt-8 mb-3 pt-4 border-t border-gray-300 first:mt-0 first:border-t-0 text-black" style={{ color: '#000000' }}>{trimmedLine.substring(3)}</h2>);
+        elements.push(<h2 key={i} className="text-2xl font-extrabold mt-8 mb-3 pt-4 border-t border-gray-300 first:mt-0 first:border-t-0 text-black">{trimmedLine.substring(3)}</h2>);
       } else if (trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ')) {
         listItems.push(trimmedLine.replace(/^[-*]\s*/, ''));
       } else if (trimmedLine === '') {
         flushList();
       } else {
         flushList();
-        // Using font-semibold here to combat PDF "thinning" effect
-        elements.push(<p key={i} className="mb-4 text-black font-semibold leading-relaxed" style={{ color: '#000000' }}>{trimmedLine}</p>);
+        // Updated: Changed from font-semibold to font-medium (sometimes bold renders weirdly at small sizes)
+        // Removed inline style since <SpecificReportStyles> handles it globally now
+        elements.push(<p key={i} className="mb-4 text-black font-medium leading-relaxed">{trimmedLine}</p>);
       }
     });
 
@@ -160,70 +186,74 @@ function ReportDisplay({
   };
 
   return (
-    <div key={vertical} className="animate-fade-in" id="report-container">
-      {/* We add p-4 here to ensure the PDF capture has padding around the title area when background is forced white */}
-      <div className="md:flex justify-between items-center mb-6 p-4 md:p-0">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-black" style={{ color: '#000000' }}>
-            {marketCode}: {vertical} {t.reportTitleSuffix}
-          </h1>
-          <p className="text-sm font-bold mt-1 text-black" style={{ color: '#000000' }}>
-            {t.lastUpdated}: {result.lastUpdated.toLocaleString()}
-          </p>
-        </div>
+    <div key={vertical} className="animate-fade-in">
+      {/* Inject the styles here */}
+      <SpecificReportStyles />
+      
+      {/* 3. Moved id="report-container" inside the animation wrapper */}
+      <div id="report-container">
         
-        {/* data-html2canvas-ignore ensures these buttons don't appear in the PDF */}
-        <div className="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0" data-html2canvas-ignore>
-          <button
-            onClick={handleCopy}
-            className="flex items-center justify-center px-4 py-2 bg-slate-600 text-white font-semibold rounded-lg shadow-md hover:bg-slate-700 transition-colors duration-200 disabled:bg-slate-300"
-          >
-            <CopyIcon className="w-5 h-5 mr-2" />
-            {isCopied ? t.copiedButton : t.copyButton}
-          </button>
-           <button
-            onClick={handleDownloadPDF}
-            className="flex items-center justify-center px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors duration-200"
-          >
-            <DownloadIcon className="w-5 h-5 mr-2" />
-            {t.downloadButton}
-          </button>
-          <button
-            onClick={onUpdateReport}
-            disabled={isLoading}
-            className="flex items-center justify-center px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 transition-colors duration-200 disabled:bg-primary-300 disabled:cursor-not-allowed"
-          >
-            <RefreshIcon className={`w-5 h-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            {t.updateButton}
-          </button>
-        </div>
-      </div>
-
-      <article 
-        className="max-w-none bg-white p-6 md:p-8 rounded-lg shadow-lg text-black font-semibold text-lg leading-relaxed"
-        style={{ color: '#000000' }}
-      >
-        {renderFormattedText(result.text)}
-      </article>
-
-      {result.sources.length > 0 && (
-        <div className="mt-10 p-4 md:p-0">
-          <h2 className="text-2xl font-bold text-black mb-4" style={{ color: '#000000' }}>{t.sourcesTitle}</h2>
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <ul className="space-y-3">
-              {result.sources.map((source, index) => (
-                source.web && <li key={index} className="flex items-start">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 mt-1 text-primary-500 flex-shrink-0" fill="none" viewBox="0 0 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                  <a href={source.web.uri} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline hover:text-primary-800 transition-colors break-words font-medium">
-                    {source.web.title || source.web.uri}
-                  </a>
-                </li>
-              ))}
-            </ul>
+        <div className="md:flex justify-between items-center mb-6 p-4 md:p-0">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-black">
+              {marketCode}: {vertical} {t.reportTitleSuffix}
+            </h1>
+            <p className="text-sm font-bold mt-1 text-black">
+              {t.lastUpdated}: {result.lastUpdated.toLocaleString()}
+            </p>
+          </div>
+          
+          <div className="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0" data-html2canvas-ignore>
+            <button
+              onClick={handleCopy}
+              className="flex items-center justify-center px-4 py-2 bg-slate-600 text-white font-semibold rounded-lg shadow-md hover:bg-slate-700 transition-colors duration-200 disabled:bg-slate-300"
+            >
+              <CopyIcon className="w-5 h-5 mr-2" />
+              {isCopied ? t.copiedButton : t.copyButton}
+            </button>
+             <button
+              onClick={handleDownloadPDF}
+              className="flex items-center justify-center px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors duration-200"
+            >
+              <DownloadIcon className="w-5 h-5 mr-2" />
+              {t.downloadButton}
+            </button>
+            <button
+              onClick={onUpdateReport}
+              disabled={isLoading}
+              className="flex items-center justify-center px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 transition-colors duration-200 disabled:bg-primary-300 disabled:cursor-not-allowed"
+            >
+              <RefreshIcon className={`w-5 h-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              {t.updateButton}
+            </button>
           </div>
         </div>
-      )}
-      <AppFooter text={t.footerText} />
+
+        <article 
+          className="max-w-none bg-white p-6 md:p-8 rounded-lg shadow-lg text-black font-medium text-lg leading-relaxed"
+        >
+          {renderFormattedText(result.text)}
+        </article>
+
+        {result.sources.length > 0 && (
+          <div className="mt-10 p-4 md:p-0">
+            <h2 className="text-2xl font-bold text-black mb-4">{t.sourcesTitle}</h2>
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <ul className="space-y-3">
+                {result.sources.map((source, index) => (
+                  source.web && <li key={index} className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 mt-1 text-primary-500 flex-shrink-0" fill="none" viewBox="0 0 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                    <a href={source.web.uri} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline hover:text-primary-800 transition-colors break-words font-medium">
+                      {source.web.title || source.web.uri}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+        <AppFooter text={t.footerText} />
+      </div>
     </div>
   );
 }
@@ -275,4 +305,3 @@ export function ContentDisplay({
     </main>
   );
 }
-    
