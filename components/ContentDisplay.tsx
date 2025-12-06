@@ -43,116 +43,132 @@ null;
 
 
 
-const 
-AppFooter = ({ text }: { text: string }) => (
+function 
+AppFooter({ text }: { text: string }) {
 
-    <footer className="text-center py-4 mt-8">
+    return (
 
-        <p className="text-sm text-gray-500">
+        <footer className="text-center py-4 mt-8">
 
-            {text} <span className="font-bold">eAMS</span>
+            <p className="text-sm text-gray-500">
 
-        </p>
+                {text} <span className="font-bold">eAMS</span>
 
-    </footer>
+            </p>
 
-);
+        </footer>
+
+    );
+
+}
 
 
 
-const 
-InitialState = ({ t }: { t: UiTranslations }) => (
+function 
+InitialState({ t }: { t: UiTranslations }) {
 
-    <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 p-8 animate-fade-in">
+    return (
 
-        <div className="flex-grow flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 p-8 animate-fade-in">
 
-            {/* Container for logo and title */}
+            <div className="flex-grow flex flex-col items-center justify-center">
 
-            <div className="w-full max-w-lg flex flex-col items-center">
+                {/* Container for logo and title */}
 
-                <img 
+                <div className="w-full max-w-lg flex flex-col items-center">
 
-                    src="/images/welcome-page.png"
+                    <img 
 
-                    alt="eAMS Marketpulse"
+                        src="/images/welcome-page.png"
 
-                    className="w-full h-auto object-contain"
+                        alt="eAMS Marketpulse"
 
-                />
+                        className="w-full h-auto object-contain"
+
+                    />
+
+                </div>
+
+
+
+                <div className="mt-4 max-w-2xl">
+
+                    <h2 className="text-2xl font-bold text-gray-700">{t.welcomeTitle}</h2>
+
+                    <p className="mt-4 text-lg">
+
+                        {t.welcomeIntro}
+
+                    </p>
+
+                    <p className="mt-2 text-lg">
+
+                        {t.welcomeInstruction}
+
+                    </p>
+
+                </div>
 
             </div>
 
-
-
-            <div className="mt-4 max-w-2xl">
-
-                <h2 className="text-2xl font-bold text-gray-700">{t.welcomeTitle}</h2>
-
-                <p className="mt-4 text-lg">
-
-                    {t.welcomeIntro}
-
-                </p>
-
-                <p className="mt-2 text-lg">
-
-                    {t.welcomeInstruction}
-
-                </p>
-
-            </div>
+            <AppFooter text={t.footerText} />
 
         </div>
 
-        <AppFooter text={t.footerText} />
+    );
 
-    </div>
-
-);
+}
 
 
 
-const 
-LoadingState = ({ vertical, message }: { vertical: 
-string, message: string }) => (
+function 
+LoadingState({ vertical, message }: { vertical: 
+string, message: string }) {
 
-    <div className="flex flex-col items-center justify-center h-full text-center text-gray-600 p-8">
+    return (
 
-        <LoadingSpinner />
+        <div className="flex flex-col items-center justify-center h-full text-center text-gray-600 p-8">
 
-        <p className="mt-4 text-lg">{message}</p>
+            <LoadingSpinner />
 
-        <p className="text-lg font-semibold text-primary-700">{vertical}...</p>
+            <p className="mt-4 text-lg">{message}</p>
 
-    </div>
+            <p className="text-lg font-semibold text-primary-700">{vertical}...</p>
 
-);
+        </div>
+
+    );
+
+}
 
 
 
-const 
-ErrorState = ({ error, title }: { error: 
-string, title: string }) => (
+function 
+ErrorState({ error, title }: { error: string, title:
+string }) {
 
-    <div className="m-4 flex flex-col items-center justify-center text-center text-red-700 bg-red-100 border border-red-300 p-6 rounded-lg">
+    return (
 
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-4" fill="none"
+        <div className="m-4 flex flex-col items-center justify-center text-center text-red-700 bg-red-100 border border-red-300 p-6 rounded-lg">
+
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-4" fill="none"
  viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round"
  strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
 
-        <h3 className="text-xl font-bold">{title}</h3>
+            <h3 className="text-xl font-bold">{title}</h3>
 
-        <p className="mt-2">{error}</p>
+            <p className="mt-2">{error}</p>
 
-    </div>
+        </div>
 
-);
+    );
+
+}
 
 
 
-const 
-ReportDisplay = ({ 
+function 
+ReportDisplay({ 
 
     result, 
 
@@ -180,7 +196,7 @@ ReportDisplay = ({
 
     marketCode: string 
 
-}) => {
+}) {
 
     const [isCopied, setIsCopied] = useState(false);
 
@@ -543,16 +559,14 @@ ${isLoading ? 'animate-spin' :
 
 
 
-
-
 export 
-const ContentDisplay = ({ 
+function ContentDisplay({ 
 
     isLoading, result, error, vertical, onUpdateReport, translations, 
 
     isEnglishMode, onToggleLanguage, marketCode 
 
-}: ContentDisplayProps) => {
+}: ContentDisplayProps) {
 
     
 
@@ -640,4 +654,4 @@ const ContentDisplay = ({
 
     );
 
-};
+}
