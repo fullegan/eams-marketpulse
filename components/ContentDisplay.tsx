@@ -23,7 +23,7 @@ interface ContentDisplayProps {
 function AppFooter({ text }: { text: string }) {
   return (
     <footer className="text-center py-4 mt-8">
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-gray-600">
         {text} <span className="font-bold">eAMS</span>
       </p>
     </footer>
@@ -32,7 +32,7 @@ function AppFooter({ text }: { text: string }) {
 
 function InitialState({ t }: { t: UiTranslations }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 p-8 animate-fade-in">
+    <div className="flex flex-col items-center justify-center h-full text-center text-gray-800 p-8 animate-fade-in">
       <div className="flex-grow flex flex-col items-center justify-center">
         <div className="w-full max-w-lg flex flex-col items-center">
           <img
@@ -42,9 +42,13 @@ function InitialState({ t }: { t: UiTranslations }) {
           />
         </div>
         <div className="mt-4 max-w-2xl">
-          <h2 className="text-2xl font-bold text-gray-700">{t.welcomeTitle}</h2>
-          <p className="mt-4 text-lg">{t.welcomeIntro}</p>
-          <p className="mt-2 text-lg">{t.welcomeInstruction}</p>
+          <h2 className="text-2xl font-bold text-black">{t.welcomeTitle}</h2>
+          <p className="mt-4 text-lg font-medium text-gray-800">
+            {t.welcomeIntro}
+          </p>
+          <p className="mt-2 text-lg text-gray-800">
+            {t.welcomeInstruction}
+          </p>
         </div>
       </div>
       <AppFooter text={t.footerText} />
@@ -54,7 +58,7 @@ function InitialState({ t }: { t: UiTranslations }) {
 
 function LoadingState({ vertical, message }: { vertical: string; message: string }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center text-gray-600 p-8">
+    <div className="flex flex-col items-center justify-center h-full text-center text-gray-800 p-8">
       <LoadingSpinner />
       <p className="mt-4 text-lg">{message}</p>
       <p className="text-lg font-semibold text-primary-700">{vertical}...</p>
@@ -124,9 +128,13 @@ function ReportDisplay({
     const flushList = () => {
       if (listItems.length > 0) {
         elements.push(
-          <ul key={`ul-${elements.length}`} className="list-disc space-y-2 pl-6 mb-4 text-black marker:text-black">
+          <ul 
+            key={`ul-${elements.length}`} 
+            className="list-disc space-y-2 pl-6 mb-4 !text-black marker:!text-black" 
+            style={{ color: 'black' }}
+          >
             {listItems.map((item, j) => (
-              <li key={j} className="ml-2">{item}</li>
+              <li key={j} className="ml-2 !text-black" style={{ color: 'black' }}>{item}</li>
             ))}
           </ul>
         );
@@ -139,17 +147,41 @@ function ReportDisplay({
 
       if (trimmedLine.startsWith('### ')) {
         flushList();
-        elements.push(<h3 key={i} className="text-xl font-bold mt-6 mb-2 text-black">{trimmedLine.substring(4)}</h3>);
+        elements.push(
+          <h3 
+            key={i} 
+            className="text-xl font-bold mt-6 mb-2 !text-black" 
+            style={{ color: 'black' }}
+          >
+            {trimmedLine.substring(4)}
+          </h3>
+        );
       } else if (trimmedLine.startsWith('## ')) {
         flushList();
-        elements.push(<h2 key={i} className="text-2xl font-bold mt-8 mb-3 pt-4 border-t border-gray-200 first:mt-0 first:border-t-0 text-black">{trimmedLine.substring(3)}</h2>);
+        elements.push(
+          <h2 
+            key={i} 
+            className="text-2xl font-bold mt-8 mb-3 pt-4 border-t border-gray-200 first:mt-0 first:border-t-0 !text-black" 
+            style={{ color: 'black' }}
+          >
+            {trimmedLine.substring(3)}
+          </h2>
+        );
       } else if (trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ')) {
         listItems.push(trimmedLine.replace(/^[-*]\s*/, ''));
       } else if (trimmedLine === '') {
         flushList();
       } else {
         flushList();
-        elements.push(<p key={i} className="mb-4 text-black">{trimmedLine}</p>);
+        elements.push(
+          <p 
+            key={i} 
+            className="mb-4 !text-black" 
+            style={{ color: 'black' }}
+          >
+            {trimmedLine}
+          </p>
+        );
       }
     });
 
@@ -161,14 +193,14 @@ function ReportDisplay({
     <div key={vertical} className="animate-fade-in" id="report-container">
       <div className="md:flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-black">
+          <h1 className="text-3xl md:text-4xl font-extrabold !text-black" style={{ color: 'black' }}>
             {marketCode}: {vertical} {t.reportTitleSuffix}
           </h1>
-          <p className="text-sm text-gray-900 mt-1 font-semibold">
+          <p className="text-sm font-semibold mt-1 !text-black" style={{ color: 'black' }}>
             {t.lastUpdated}: {result.lastUpdated.toLocaleString()}
           </p>
         </div>
-
+        
         {/* data-html2canvas-ignore ensures these buttons don't appear in the PDF */}
         <div className="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0" data-html2canvas-ignore>
           <button
@@ -196,13 +228,18 @@ function ReportDisplay({
         </div>
       </div>
 
-      <article className="prose-lg max-w-none bg-white p-6 md:p-8 rounded-lg shadow-lg prose-headings:text-black prose-p:text-black prose-li:text-black prose-strong:text-black text-black">
+      <article 
+        className="prose-lg max-w-none bg-white p-6 md:p-8 rounded-lg shadow-lg prose-headings:!text-black prose-p:!text-black prose-li:!text-black prose-strong:!text-black !text-black"
+        style={{ color: 'black' }}
+      >
         {renderFormattedText(result.text)}
       </article>
 
       {result.sources.length > 0 && (
         <div className="mt-10">
-          <h2 className="text-2xl font-bold text-black mb-4">{t.sourcesTitle}</h2>
+          <h2 className="text-2xl font-bold !text-black mb-4" style={{ color: 'black' }}>
+            {t.sourcesTitle}
+          </h2>
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <ul className="space-y-3">
               {result.sources.map((source, index) => (
