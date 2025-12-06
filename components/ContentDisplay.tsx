@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import type { ApiResult, UiTranslations } from '../types';
-import { LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon } from './Icons';
+import { LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon, DownloadIcon } from './Icons';
 
 interface ContentDisplayProps {
   isLoading: boolean;
@@ -68,12 +67,43 @@ const ErrorState: React.FC<{error: string, title: string}> = ({error, title}) =>
 
 const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: boolean, onUpdateReport: () => void, t: UiTranslations}> = ({ result, vertical, isLoading, onUpdateReport, t }) => {
     const [isCopied, setIsCopied] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
 
     const handleCopy = () => {
         if (result?.text) {
             navigator.clipboard.writeText(result.text);
             setIsCopied(true);
             setTimeout(() => setIsCopied(false), 2500); // Reset after 2.5 seconds
+        }
+    };
+
+    const handleDownloadPDF = () => {
+        const element = document.getElementById('report-container');
+        if (!element) return;
+
+        setIsDownloading(true);
+
+        const opt = {
+            margin: [10, 15, 15, 15], // top, left, bottom, right
+            filename: `${vertical.replace(/\s+/g, '_')}_Market_Report.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Access html2pdf from window (loaded via CDN)
+        // @ts-ignore
+        if (window.html2pdf) {
+             // @ts-ignore
+            window.html2pdf().set(opt).from(element).save().then(() => {
+                setIsDownloading(false);
+            }).catch((err: any) => {
+                console.error("PDF generation failed", err);
+                setIsDownloading(false);
+            });
+        } else {
+            console.error("html2pdf library not loaded");
+            setIsDownloading(false);
         }
     };
 
@@ -120,7 +150,7 @@ const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: b
     };
 
     return (
-        <div key={vertical} className="animate-fade-in">
+        <div key={vertical} className="animate-fade-in" id="report-container">
             <div className="md:flex justify-between items-center mb-6">
                 <div>
                     <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900">
@@ -130,7 +160,21 @@ const ReportDisplay: React.FC<{result: ApiResult, vertical: string, isLoading: b
                         {t.lastUpdated}: {result.lastUpdated.toLocaleString()}
                     </p>
                 </div>
-                <div className="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0">
+                {/* 
+                   data-html2canvas-ignore="true" tells the PDF generator to SKIP this entire div.
+                   This keeps the buttons out of the final PDF.
+                */}
+                <div className="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0" data-html2canvas-ignore="true">
+                     <button
+                        onClick={handleDownloadPDF}
+                        disabled={isDownloading}
+                        className="flex items-center justify-center px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-lg shadow-sm border border-slate-300 hover:bg-slate-200 transition-colors duration-200 disabled:opacity-50"
+                        title={t.downloadButton}
+                    >
+                       <DownloadIcon className={`w-5 h-5 mr-2 ${isDownloading ? 'animate-bounce' : ''}`} />
+                       {t.downloadButton}
+                    </button>
+
                     <button
                         onClick={handleCopy}
                         className="flex items-center justify-center px-4 py-2 bg-slate-600 text-white font-semibold rounded-lg shadow-md hover:bg-slate-700 transition-colors duration-200 disabled:bg-slate-300"
@@ -190,7 +234,7 @@ export const ContentDisplay: React.FC<ContentDisplayProps> = ({
            
            {/* Language Toggle Button (Absolute positioned top-right) */}
            {showLanguageToggle && (
-             <div className="absolute top-4 right-4 z-10">
+             <div className="absolute top-4 right-4 z-10" data-html2canvas-ignore="true">
                 <button 
                     onClick={onToggleLanguage}
                     className="flex items-center bg-white px-3 py-2 rounded-full shadow-sm border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary-600 transition-colors"

@@ -1,6 +1,6 @@
 import React from 'react';
 
-// The new App Logo (Trending Up / Chart Line) - Used for Browser Tab / Favicon context if needed.
+// The new App Logo (Trending Up / Chart Line) - Used for Browser Tab / Favicon context if needed, or specific UI elements.
 export const ChartLineIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg 
     xmlns="http://www.w3.org/2000/svg" 
@@ -14,6 +14,7 @@ export const ChartLineIcon: React.FC<{ className?: string }> = ({ className }) =
 );
 
 // Official eAMS Brand Logo
+// Updated viewBox to 145 width to prevent clipping of the 'S' on wider system fonts
 export const EamsLogo: React.FC<{ className?: string }> = ({ className }) => (
   <svg viewBox="0 0 145 48" className={className} xmlns="http://www.w3.org/2000/svg" fill="none">
     <text x="2" y="40" fontFamily="sans-serif" fontWeight="900" fontSize="44" fill="#E53238">e</text>
@@ -106,6 +107,23 @@ export const CopyIcon: React.FC<{ className?: string }> = ({ className }) => (
       strokeLinecap="round" 
       strokeLinejoin="round" 
       d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" 
+    />
+  </svg>
+);
+
+export const DownloadIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
     />
   </svg>
 );
