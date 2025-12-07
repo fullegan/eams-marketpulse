@@ -15,14 +15,15 @@ interface ContentDisplayProps {
   marketCode: string;
 }
 
-// 1. New Helper: CSS specifically for the PDF generation to override Tailwind/Canvas issues
-// Updated for Premium Look: Added Borders to H2, better spacing.
+// 1. CSS specifically for the PDF generation to override Tailwind/Canvas issues
+// Added 'geometricPrecision' and font-weight enforcement to fix faint text issues.
 const SpecificReportStyles = () => (
   <style>{`
     /* Force high contrast for the PDF container */
     #report-container {
       color: #000000 !important;
-      -webkit-font-smoothing: auto !important;
+      -webkit-font-smoothing: antialiased !important;
+      text-rendering: geometricPrecision !important; /* Critical for clean PDF text */
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
     
@@ -39,28 +40,33 @@ const SpecificReportStyles = () => (
       margin-top: 32px !important;
       margin-bottom: 16px !important;
       font-size: 1.5rem !important;
-      page-break-after: avoid !important; /* Don't break page right after header */
+      font-weight: 800 !important;
+      page-break-after: avoid !important;
     }
 
     #report-container h3 {
-      color: #333333 !important;
+      color: #000000 !important;
       margin-top: 24px !important;
       margin-bottom: 12px !important;
       font-size: 1.25rem !important;
+      font-weight: 700 !important;
     }
 
+    /* Force Semi-Bold for body text to counteract PDF thinning/greying */
     #report-container p, 
     #report-container li {
       color: #000000 !important;
       opacity: 1 !important;
       line-height: 1.6 !important;
       margin-bottom: 12px !important;
+      font-weight: 600 !important; /* Bumped to 600 to look like 400/500 in PDF */
     }
 
     /* Print/PDF friendly link styling */
     #report-container a {
       color: #0064D2 !important;
       text-decoration: none !important;
+      font-weight: 700 !important;
     }
   `}</style>
 );
@@ -156,7 +162,7 @@ function ReportDisplay({
   const handleDownloadPDF = () => {
     const element = document.getElementById('report-container');
     const opt = {
-      margin: [15, 15, 15, 15], // Increased margins for professional look
+      margin: [15, 15, 15, 15], 
       filename: `${marketCode}_${vertical}_Market_Report.pdf`,
       image: { type: 'jpeg', quality: 1.0 }, 
       html2canvas: { 
@@ -173,6 +179,14 @@ function ReportDisplay({
     } else {
       alert('PDF generation library not loaded.');
     }
+  };
+
+  // Helper to format date based on Market Code
+  const getFormattedDate = () => {
+    const date = new Date();
+    // US uses MM/DD/YYYY, everyone else uses DD/MM/YYYY
+    const locale = marketCode === 'US' ? 'en-US' : 'en-GB';
+    return date.toLocaleDateString(locale);
   };
 
   const renderFormattedText = (text: string) => {
@@ -208,6 +222,7 @@ function ReportDisplay({
         flushList();
       } else {
         flushList();
+        // Updated font-semibold to make PDF text darker
         elements.push(<p key={i} className="mb-4 text-black font-semibold leading-relaxed" style={{ color: '#000000' }}>{trimmedLine}</p>);
       }
     });
@@ -223,19 +238,23 @@ function ReportDisplay({
       
       {/* Document Header Section */}
       <div className="md:flex justify-between items-start mb-8 p-6 bg-slate-50 border border-slate-200 rounded-lg">
-        <div>
+        <div className="flex-grow">
           <h1 className="text-3xl md:text-4xl font-extrabold text-black mb-2" style={{ color: '#000000' }}>
-            {vertical}
+            <span className="text-primary-700">{marketCode}:</span> {vertical}
           </h1>
-          <div className="flex flex-wrap gap-4 text-sm font-bold text-gray-700">
-             <span className="bg-white px-3 py-1 rounded border border-gray-300">Market: {marketCode}</span>
+          <div className="flex flex-wrap gap-4 text-sm font-bold text-gray-700 mt-3">
              <span className="bg-white px-3 py-1 rounded border border-gray-300">{t.reportTitleSuffix}</span>
-             <span className="bg-white px-3 py-1 rounded border border-gray-300">{new Date().toLocaleDateString()}</span>
+             <span className="bg-white px-3 py-1 rounded border border-gray-300">{getFormattedDate()}</span>
           </div>
+        </div>
+
+        {/* Branding Logo (Visible in PDF) */}
+        <div className="hidden md:block ml-6 flex-shrink-0">
+           <img src="/images/sidebar-menu.png" alt="eAMS" className="h-16 w-auto object-contain" />
         </div>
         
         {/* Actions - Hidden in PDF */}
-        <div className="flex flex-col md:flex-row md:items-center gap-3 mt-4 md:mt-0" data-html2canvas-ignore>
+        <div className="flex flex-col md:flex-row md:items-center gap-3 mt-4 md:mt-0 md:ml-4" data-html2canvas-ignore>
           <button
             onClick={handleCopy}
             className="flex items-center justify-center px-4 py-2 bg-slate-600 text-white font-semibold rounded-lg shadow-md hover:bg-slate-700 transition-colors duration-200 disabled:bg-slate-300"
