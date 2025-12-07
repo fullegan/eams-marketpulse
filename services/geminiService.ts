@@ -37,37 +37,41 @@ export const fetchVerticalInsights = async (vertical: string, forceEnglish: bool
     console.log(`Fetching insights for: ${vertical} (${market.code}). Language: ${targetLanguage}...`);
 
     const prompt = `
-      As an expert e-commerce analyst for the ${market.name} market, provide a detailed and professionally formatted report for sellers on the ${market.platformName} for the "${vertical}" vertical. The report must be written in ${targetLanguage}.
+      Act as a senior e-commerce strategy consultant for eBay's ${market.name} market. 
+      Provide a high-level, professional strategic report for sellers in the "${vertical}" vertical.
+      The report must be written in ${targetLanguage}.
+      
+      Your goal is to help sellers plan their **Inventory (Stock Levels)** and **Promoted Listings (Ad Spend)**.
 
-      The report must follow this exact Markdown structure using the following headings:
+      The report must follow this exact Markdown structure:
 
       ## ${t.sectionExecutiveSummary}
-      (A brief, high-level overview of the vertical's current state and key opportunities.)
+      (A concise, executive-level overview of the vertical's health and immediate opportunities.)
 
       ## ${t.sectionMarketHealth}
-      (Detailed analysis of the vertical's health, growth areas, declining segments, and recent consumer trends.)
+      (Analysis of growth areas vs. declining segments. Be specific about consumer shifts.)
 
-      ## ${t.sectionSeasonalDemand}
-      (Identify key seasonal peaks and troughs. Provide actionable advice for sellers.)
+      ## ${t.sectionSeasonalDemand} & Inventory Strategy
+      (Identify key seasonal peaks. **Crucial:** Explicitly list items to "Stock Up / Increase Spend" and items to "Clearance / Reduce Spend" based on upcoming trends.)
 
       ## ${t.sectionBuyerInfluencers}
-      (Analysis of the most important purchasing factors for customers, e.g., price, brand, quality, shipping.)
+      (What drives conversion in this category right now? e.g., Speed, Price, Eco-friendly, Bundles.)
 
       ## ${t.sectionKeyTakeaways}
-      (A bulleted list of concrete, actionable recommendations for stocking, pricing, and promotional strategies.)
+      (3-5 bullet points of concrete actions the seller should take immediately.)
 
       ## ${t.sectionKeywords}
-      (A bulleted list of the top 10-15 relevant keywords that sellers should include in their eBay listings to improve visibility.)
+      (A list of the top 10-15 high-volume search terms. Format this as a clean list.)
 
       ### ${t.sectionCurrentQuarter} (Q${currentQuarter} ${currentYear})
-      (Comment on specific items expected to surge or decline in demand *right now*.)
+      (Immediate focus areas for the current weeks.)
 
       ### ${t.sectionLookAhead} Q${nextQuarter} ${nextQuarterYear}
-      (Provide a forecast and preparation advice for the upcoming quarter.)
+      (Forecast for the next quarter to help with long-term stock ordering.)
     `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash", 
       contents: prompt,
       config: {
         tools: [{googleSearch: {}}],
