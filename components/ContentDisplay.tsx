@@ -16,57 +16,46 @@ interface ContentDisplayProps {
 }
 
 // 1. CSS specifically for the PDF generation to override Tailwind/Canvas issues
-// Added 'geometricPrecision' and font-weight enforcement to fix faint text issues.
 const SpecificReportStyles = () => (
   <style>{`
     /* Force high contrast for the PDF container */
     #report-container {
       color: #000000 !important;
-      -webkit-font-smoothing: antialiased !important;
-      text-rendering: geometricPrecision !important; /* Critical for clean PDF text */
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: auto !important; /* Makes text thicker on canvas */
+      text-rendering: geometricPrecision !important;
+      background-color: #ffffff !important;
     }
     
-    /* Professional Document Styling */
     #report-container h1 {
       color: #000000 !important;
-      margin-bottom: 0.5rem !important;
     }
     
     #report-container h2 {
-      color: #0064D2 !important; /* eBay Blue for Headers */
-      border-bottom: 2px solid #E5E7EB !important; /* Light grey underline */
+      color: #0064D2 !important; /* eBay Blue */
+      border-bottom: 2px solid #E5E7EB !important;
       padding-bottom: 8px !important;
-      margin-top: 32px !important;
+      margin-top: 24px !important;
       margin-bottom: 16px !important;
-      font-size: 1.5rem !important;
-      font-weight: 800 !important;
       page-break-after: avoid !important;
     }
 
     #report-container h3 {
       color: #000000 !important;
-      margin-top: 24px !important;
-      margin-bottom: 12px !important;
-      font-size: 1.25rem !important;
-      font-weight: 700 !important;
+      margin-top: 20px !important;
+      margin-bottom: 10px !important;
     }
 
-    /* Force Semi-Bold for body text to counteract PDF thinning/greying */
     #report-container p, 
     #report-container li {
       color: #000000 !important;
       opacity: 1 !important;
-      line-height: 1.6 !important;
-      margin-bottom: 12px !important;
-      font-weight: 600 !important; /* Bumped to 600 to look like 400/500 in PDF */
+      font-weight: 500 !important; /* Medium weight ensures it captures clearly */
+      line-height: 1.5 !important;
     }
 
-    /* Print/PDF friendly link styling */
     #report-container a {
       color: #0064D2 !important;
       text-decoration: none !important;
-      font-weight: 700 !important;
     }
   `}</style>
 );
@@ -169,7 +158,7 @@ function ReportDisplay({
         scale: 4, 
         useCORS: true, 
         backgroundColor: '#ffffff',
-        letterRendering: true,
+        letterRendering: true, // Helps prevent font blurring
       }, 
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
@@ -197,9 +186,9 @@ function ReportDisplay({
     const flushList = () => {
       if (listItems.length > 0) {
         elements.push(
-          <ul key={`ul-${elements.length}`} className="list-disc space-y-2 pl-6 mb-4 text-black marker:text-black" style={{ color: '#000000' }}>
+          <ul key={`ul-${elements.length}`} className="list-disc space-y-2 pl-6 mb-4 text-black marker:text-black font-medium">
             {listItems.map((item, j) => (
-              <li key={j} className="ml-2 text-black font-semibold" style={{ color: '#000000' }}>{item}</li>
+              <li key={j} className="ml-2 text-black">{item}</li>
             ))}
           </ul>
         );
@@ -212,18 +201,17 @@ function ReportDisplay({
 
       if (trimmedLine.startsWith('### ')) {
         flushList();
-        elements.push(<h3 key={i} className="text-xl font-bold mt-6 mb-2 text-black" style={{ color: '#000000' }}>{trimmedLine.substring(4)}</h3>);
+        elements.push(<h3 key={i} className="text-xl font-bold mt-6 mb-2 text-black">{trimmedLine.substring(4)}</h3>);
       } else if (trimmedLine.startsWith('## ')) {
         flushList();
-        elements.push(<h2 key={i} className="text-2xl font-extrabold mt-8 mb-3 pt-4 border-t border-gray-200 first:mt-0 first:border-t-0 text-black" style={{ color: '#0064D2' }}>{trimmedLine.substring(3)}</h2>);
+        elements.push(<h2 key={i} className="text-2xl font-extrabold mt-8 mb-3 pt-4 border-t border-gray-200 first:mt-0 first:border-t-0 text-black">{trimmedLine.substring(3)}</h2>);
       } else if (trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ')) {
         listItems.push(trimmedLine.replace(/^[-*]\s*/, ''));
       } else if (trimmedLine === '') {
         flushList();
       } else {
         flushList();
-        // Updated font-semibold to make PDF text darker
-        elements.push(<p key={i} className="mb-4 text-black font-semibold leading-relaxed" style={{ color: '#000000' }}>{trimmedLine}</p>);
+        elements.push(<p key={i} className="mb-4 text-black font-medium leading-relaxed">{trimmedLine}</p>);
       }
     });
 
@@ -232,79 +220,88 @@ function ReportDisplay({
   };
 
   return (
-    <div key={vertical} className="animate-fade-in" id="report-container">
-      {/* Inject the styles here */}
+    <div key={vertical} className="animate-fade-in">
       <SpecificReportStyles />
       
-      {/* Document Header Section */}
-      <div className="md:flex justify-between items-start mb-8 p-6 bg-slate-50 border border-slate-200 rounded-lg">
-        <div className="flex-grow">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-black mb-2" style={{ color: '#000000' }}>
-            <span className="text-primary-700">{marketCode}:</span> {vertical}
-          </h1>
-          <div className="flex flex-wrap gap-4 text-sm font-bold text-gray-700 mt-3">
-             <span className="bg-white px-3 py-1 rounded border border-gray-300">{t.reportTitleSuffix}</span>
-             <span className="bg-white px-3 py-1 rounded border border-gray-300">{getFormattedDate()}</span>
-          </div>
-        </div>
-
-        {/* Branding Logo (Visible in PDF) */}
-        <div className="hidden md:block ml-6 flex-shrink-0">
-           <img src="/images/sidebar-menu.png" alt="eAMS" className="h-16 w-auto object-contain" />
-        </div>
+      {/* 
+         CRITICAL FIX: 
+         The id="report-container" is moved INSIDE the animation wrapper.
+         If html2canvas captures the wrapper that has 'opacity' styles from the animation,
+         the text renders faintly. By capturing this inner div, we get solid 100% opacity text.
+      */}
+      <div id="report-container" className="bg-slate-50 min-h-full">
         
-        {/* Actions - Hidden in PDF */}
-        <div className="flex flex-col md:flex-row md:items-center gap-3 mt-4 md:mt-0 md:ml-4" data-html2canvas-ignore>
-          <button
-            onClick={handleCopy}
-            className="flex items-center justify-center px-4 py-2 bg-slate-600 text-white font-semibold rounded-lg shadow-md hover:bg-slate-700 transition-colors duration-200 disabled:bg-slate-300"
-          >
-            <CopyIcon className="w-5 h-5 mr-2" />
-            {isCopied ? t.copiedButton : t.copyButton}
-          </button>
-           <button
-            onClick={handleDownloadPDF}
-            className="flex items-center justify-center px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors duration-200"
-          >
-            <DownloadIcon className="w-5 h-5 mr-2" />
-            {t.downloadButton}
-          </button>
-          <button
-            onClick={onUpdateReport}
-            disabled={isLoading}
-            className="flex items-center justify-center px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 transition-colors duration-200 disabled:bg-primary-300 disabled:cursor-not-allowed"
-          >
-            <RefreshIcon className={`w-5 h-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            {t.updateButton}
-          </button>
-        </div>
-      </div>
+        {/* Document Header Section */}
+        <div className="md:flex justify-between items-start mb-8 p-6 bg-slate-50 border-b border-slate-200">
+          <div className="flex-grow">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-black mb-4">
+              {vertical}
+            </h1>
+            <div className="flex flex-wrap gap-3 text-sm font-bold text-gray-800">
+               {/* Market Code moved back to a separate badge */}
+               <span className="bg-white px-3 py-1.5 rounded border border-gray-300 shadow-sm text-primary-700">Market: {marketCode}</span>
+               <span className="bg-white px-3 py-1.5 rounded border border-gray-300 shadow-sm">{t.reportTitleSuffix}</span>
+               <span className="bg-white px-3 py-1.5 rounded border border-gray-300 shadow-sm">{getFormattedDate()}</span>
+            </div>
+          </div>
 
-      <article 
-        className="max-w-none bg-white p-8 md:p-10 rounded-lg shadow-lg text-black font-semibold text-lg leading-relaxed border-t-4 border-primary-600"
-        style={{ color: '#000000' }}
-      >
-        {renderFormattedText(result.text)}
-      </article>
-
-      {result.sources.length > 0 && (
-        <div className="mt-10 p-4 md:p-0">
-          <h2 className="text-2xl font-bold text-black mb-4" style={{ color: '#000000' }}>{t.sourcesTitle}</h2>
-          <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-100">
-            <ul className="space-y-3">
-              {result.sources.map((source, index) => (
-                source.web && <li key={index} className="flex items-start">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 mt-1 text-primary-500 flex-shrink-0" fill="none" viewBox="0 0 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                  <a href={source.web.uri} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline hover:text-primary-800 transition-colors break-words font-medium">
-                    {source.web.title || source.web.uri}
-                  </a>
-                </li>
-              ))}
-            </ul>
+          {/* Branding Logo (Visible in PDF) */}
+          <div className="hidden md:block ml-6 flex-shrink-0">
+             <img src="/images/sidebar-menu.png" alt="eAMS" className="h-16 w-auto object-contain" />
+          </div>
+          
+          {/* Actions - Hidden in PDF */}
+          <div className="flex flex-col md:flex-row md:items-center gap-3 mt-4 md:mt-0 md:ml-4" data-html2canvas-ignore>
+            <button
+              onClick={handleCopy}
+              className="flex items-center justify-center px-4 py-2 bg-slate-600 text-white font-semibold rounded-lg shadow-md hover:bg-slate-700 transition-colors duration-200 disabled:bg-slate-300"
+            >
+              <CopyIcon className="w-5 h-5 mr-2" />
+              {isCopied ? t.copiedButton : t.copyButton}
+            </button>
+             <button
+              onClick={handleDownloadPDF}
+              className="flex items-center justify-center px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors duration-200"
+            >
+              <DownloadIcon className="w-5 h-5 mr-2" />
+              {t.downloadButton}
+            </button>
+            <button
+              onClick={onUpdateReport}
+              disabled={isLoading}
+              className="flex items-center justify-center px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 transition-colors duration-200 disabled:bg-primary-300 disabled:cursor-not-allowed"
+            >
+              <RefreshIcon className={`w-5 h-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              {t.updateButton}
+            </button>
           </div>
         </div>
-      )}
-      <AppFooter text={t.footerText} />
+
+        <article 
+          className="max-w-none bg-white p-8 md:p-10 mx-6 rounded-lg shadow-sm text-black font-medium text-lg leading-relaxed border border-gray-100"
+        >
+          {renderFormattedText(result.text)}
+        </article>
+
+        {result.sources.length > 0 && (
+          <div className="mt-8 px-6 pb-6">
+            <h2 className="text-2xl font-bold text-black mb-4">{t.sourcesTitle}</h2>
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+              <ul className="space-y-3">
+                {result.sources.map((source, index) => (
+                  source.web && <li key={index} className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 mt-1 text-primary-500 flex-shrink-0" fill="none" viewBox="0 0 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                    <a href={source.web.uri} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline hover:text-primary-800 transition-colors break-words font-medium">
+                      {source.web.title || source.web.uri}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+        <AppFooter text={t.footerText} />
+      </div>
     </div>
   );
 }
@@ -323,7 +320,7 @@ export function ContentDisplay({
   const showLanguageToggle = !['UK', 'US', 'AU'].includes(marketCode);
 
   return (
-    <main className="w-full md:w-3/4 lg:w-4/5 p-4 md:p-8 bg-slate-100 overflow-y-auto h-screen relative">
+    <main className="w-full md:w-3/4 lg:w-4/5 p-0 bg-slate-100 overflow-y-auto h-screen relative">
       {showLanguageToggle && (
         <div className="absolute top-4 right-4 z-10">
           <button
