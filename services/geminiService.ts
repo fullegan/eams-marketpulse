@@ -19,7 +19,7 @@ if (!apiKey) {
 const ai = new GoogleGenAI({ apiKey: apiKey || '' });
 
 export const fetchVerticalInsights = async (
-  vertical: string, 
+  vertical: string,
   forceEnglish: boolean = false
 ): Promise<{ text: string; sources: GroundingChunk[] }> => {
   try {
@@ -30,12 +30,12 @@ export const fetchVerticalInsights = async (
 
     const { currentQuarter, nextQuarter, currentYear, nextQuarterYear } = getCurrentQuarterInfo();
     const market = getCurrentMarket();
-    
+
     // Logic: If forced to English, we use the 'UK' translations (which are English) for the headers
     // and explicitly tell the AI to write in English.
     const t = forceEnglish ? getTranslations('UK') : getTranslations(market.code);
     const targetLanguage = forceEnglish ? 'English' : market.language;
-    
+
     console.log(`Fetching insights for: ${vertical} (${market.code}). Language: ${targetLanguage}...`);
 
     // --- DYNAMIC SEASONAL CONTEXT GENERATION ---
@@ -45,16 +45,16 @@ export const fetchVerticalInsights = async (
     // Insights specific to Q4 (October - December)
     if (currentQuarter === 4 || nextQuarter === 4) {
       seasonalContext += `
-      - **Q4 Trend Drivers (If relevant to ${vertical}):** Look for "Doorscaping" (front door decor), "Celestial Motifs", or vertical-specific gifting trends.
-      - **Q4 Reseller/BOLO Alerts (If relevant):** Identify high-value vintage/collectible items specific to this vertical (e.g., Antique German Kugel glass for Home, or specific retro electronics for Tech).
+      - **Potential Q4 Trend Drivers:** "Doorscaping" (front door decor), "Celestial Motifs", or vertical-specific gifting trends.
+      - **Potential Q4 Reseller/BOLO Alerts:** High-value vintage/collectible items specific to this vertical (e.g., Antique German Kugel glass for Home, or specific retro electronics for Tech).
       `;
     }
 
     // Insights specific to Q1 (January - March)
     if (currentQuarter === 1 || nextQuarter === 1) {
       seasonalContext += `
-      - **Q1 Cost Hook (If relevant):** Mention rising professional service costs (Renovation/Repair) to drive DIY/Self-Repair product sales.
-      - **Q1 Design Trends (If relevant):** Highlight "Retro Revival" - specifically Y2K and retro-inspired designs resurging with Gen Z.
+      - **Potential Q1 Cost Hook:** Rising professional service costs (Renovation/Repair) driving DIY/Self-Repair product sales.
+      - **Potential Q1 Design Trends:** "Retro Revival" - specifically Y2K and retro-inspired designs.
       `;
     }
 
@@ -65,7 +65,7 @@ export const fetchVerticalInsights = async (
       
       Your goal is to help sellers plan their **Inventory (Stock Levels)** and **Promoted Listings (Ad Spend)**.
 
-      **UNIVERSAL E-COMMERCE DRIVERS (Apply these where relevant to ${vertical}):**
+      **UNIVERSAL E-COMMERCE DRIVERS (Apply these ONLY where relevant to ${vertical}):**
       1. **Mobile-First:** ~70% of category visits are likely on mobile. Emphasize that listings and images must be optimized for small screens.
       2. **Visualisation:** Buyers increasingly value Augmented Reality (AR) and video for high-ticket items. Advise on using video in listings.
       3. **Consumer Psychology:** Emphasize "Pre-owned," "Refurbished," and "Sustainability" as key conversion drivers (78% of consumers value this).
@@ -76,8 +76,9 @@ export const fetchVerticalInsights = async (
       1. **Do NOT add a document title** (e.g., "Strategic Report for...").
       2. **Do NOT add an introduction text.**
       3. **Start IMMEDIATELY with the first section header (Markdown H2 / ##).**
-      4. **Use Markdown H2 (##) for all Main Section Headers.** (This ensures they are styled Blue).
+      4. **Use Markdown H2 (##) for all Main Section Headers.**
       5. **Do NOT use H1 (#) anywhere.**
+      6. **IMPORTANT: If a specific seasonal trend driver mentioned above (e.g., "Doorscaping" or "Celestial Motifs") is NOT relevant to the "${vertical}" vertical, IGNORE IT COMPLETELY. Do not mention that it is irrelevant.**
 
       The report must follow this exact Markdown structure:
 
@@ -88,9 +89,9 @@ export const fetchVerticalInsights = async (
       (Analysis of growth areas vs. declining segments. **Specific Requirement:** Include specific financial market valuation projections (e.g., "Market valued at [Local Currency] X bn") if data is available in the search grounding.)
 
       ## ${t.sectionCurrentQuarter} (Q${currentQuarter} ${currentYear})
-      (STRATEGIC INVENTORY ACTION: Analyze the remaining weeks of this quarter. **Do NOT list keywords here.** Instead, explicitly categorize product sub-categories into:
-      1. **SURGE (Stock Up Now)**: Items with rising demand.
-      2. **DECLINE (Clearance/Reduce)**: Items where demand is fading.
+      (STRATEGIC INVENTORY ACTION: Analyze the remaining weeks of this quarter. **Do NOT list keywords here.** Instead, explicitly categorize product sub-categories using exactly these phrases:
+      1. **Expected to increase in demand**: Items with rising demand.
+      2. **Expected to decrease in demand**: Items where demand is fading.
       Explain the drivers: weather, holidays, or economic shifts.)
 
       ## ${t.sectionLookAhead} Q${nextQuarter} ${nextQuarterYear}
