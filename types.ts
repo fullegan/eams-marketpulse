@@ -29,7 +29,7 @@ export interface UiTranslations {
   copyButton: string;
   copiedButton: string;
   updateButton: string;
-  downloadButton: string; // New translation key
+  downloadButton: string;
   sourcesTitle: string;
   footerText: string;
   verticals: string[]; // The list of categories in the local language
@@ -37,10 +37,13 @@ export interface UiTranslations {
   // Report Section Headings
   sectionExecutiveSummary: string;
   sectionMarketHealth: string;
-  sectionSeasonalDemand: string;
   sectionBuyerInfluencers: string;
   sectionKeyTakeaways: string;
   sectionKeywords: string;
   sectionCurrentQuarter: string;
   sectionLookAhead: string;
+
+  // Report Sub-Headings (Demand)
+  subHeadingIncrease: string;
+  subHeadingDecrease: string;
 }
