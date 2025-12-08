@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import type { ApiResult, UiTranslations } from '../types';
 import { LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon, DownloadIcon } from './Icons';
@@ -171,11 +170,19 @@ function ReportDisplay({
   };
 
   // Helper to format date based on Market Code
-  const getFormattedDate = () => {
-    const date = new Date();
+  const getFormattedDateTime = () => {
+    // Use the result.lastUpdated to ensure consistent time, or fallback to now
+    const date = result.lastUpdated || new Date();
     // US uses MM/DD/YYYY, everyone else uses DD/MM/YYYY
     const locale = marketCode === 'US' ? 'en-US' : 'en-GB';
-    return date.toLocaleDateString(locale);
+    
+    return date.toLocaleString(locale, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   const renderFormattedText = (text: string) => {
@@ -223,11 +230,10 @@ function ReportDisplay({
     <div key={vertical} className="animate-fade-in">
       <SpecificReportStyles />
       
-      {/* 
-         CRITICAL FIX: 
-         The id="report-container" is moved INSIDE the animation wrapper.
-         If html2canvas captures the wrapper that has 'opacity' styles from the animation,
-         the text renders faintly. By capturing this inner div, we get solid 100% opacity text.
+      {/* CRITICAL FIX: 
+          The id="report-container" is moved INSIDE the animation wrapper.
+          If html2canvas captures the wrapper that has 'opacity' styles from the animation,
+          the text renders faintly. By capturing this inner div, we get solid 100% opacity text.
       */}
       <div id="report-container" className="bg-slate-50 min-h-full">
         
@@ -235,13 +241,12 @@ function ReportDisplay({
         <div className="md:flex justify-between items-start mb-8 p-6 bg-slate-50 border-b border-slate-200">
           <div className="flex-grow">
             <h1 className="text-3xl md:text-4xl font-extrabold text-black mb-4">
-              {vertical}
+              {vertical} {t.reportTitleSuffix}
             </h1>
             <div className="flex flex-wrap gap-3 text-sm font-bold text-gray-800">
-               {/* Market Code moved back to a separate badge */}
                <span className="bg-white px-3 py-1.5 rounded border border-gray-300 shadow-sm text-primary-700">Market: {marketCode}</span>
-               <span className="bg-white px-3 py-1.5 rounded border border-gray-300 shadow-sm">{t.reportTitleSuffix}</span>
-               <span className="bg-white px-3 py-1.5 rounded border border-gray-300 shadow-sm">{getFormattedDate()}</span>
+               {/* "Market Report" badge removed from here as it is now in the title */}
+               <span className="bg-white px-3 py-1.5 rounded border border-gray-300 shadow-sm">{getFormattedDateTime()}</span>
             </div>
           </div>
 
@@ -290,10 +295,10 @@ function ReportDisplay({
               <ul className="space-y-3">
                 {result.sources.map((source, index) => (
                   source.web && <li key={index} className="flex items-start">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 mt-1 text-primary-500 flex-shrink-0" fill="none" viewBox="0 0 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                    <a href={source.web.uri} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline hover:text-primary-800 transition-colors break-words font-medium">
-                      {source.web.title || source.web.uri}
-                    </a>
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 mt-1 text-primary-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                   <a href={source.web.uri} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline hover:text-primary-800 transition-colors break-words font-medium">
+                     {source.web.title || source.web.uri}
+                   </a>
                   </li>
                 ))}
               </ul>
