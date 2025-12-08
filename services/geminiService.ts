@@ -90,10 +90,10 @@ export const fetchVerticalInsights = async (vertical: string, forceEnglish: bool
       (A list of the top 10-15 high-volume search terms. Format this as a clean list.)
 
       ### ${t.sectionCurrentQuarter} (Q${currentQuarter} ${currentYear})
-      (Immediate focus areas for the current weeks. Incorporate specific seasonal trends like gifting, weather, or events.)
+      (Strategic Demand Forecast: **Do NOT list keywords here.** Instead, analyze which specific product sub-categories are expected to see a **SURGE** in demand (Stock Up) and which will **DECLINE** (Clearance) in the remaining weeks of this quarter. Explain the drivers: weather, holidays, or economic shifts.)
 
       ### ${t.sectionLookAhead} Q${nextQuarter} ${nextQuarterYear}
-      (Forecast for the next quarter to help with long-term stock ordering. Incorporate the Q1/Q4 specific drivers mentioned above if applicable.)
+      (Forward Planning: **Do NOT list keywords here.** What inventory should sellers order NOW to be ready for next quarter? Focus on early seasonal shifts and macro-trends. Identify the 'Early Bird' opportunities.)
     `;
 
     const response = await ai.models.generateContent({
