@@ -89,9 +89,9 @@ export const fetchVerticalInsights = async (
       (Analysis of growth areas vs. declining segments. **Specific Requirement:** Include specific financial market valuation projections (e.g., "Market valued at [Local Currency] X bn") if data is available in the search grounding.)
 
       ## ${t.sectionCurrentQuarter} (Q${currentQuarter} ${currentYear})
-      (STRATEGIC INVENTORY ACTION: Analyze the remaining weeks of this quarter. **Do NOT list keywords here.** Instead, explicitly categorize product sub-categories using exactly these phrases:
-      1. **Expected to increase in demand**: Items with rising demand.
-      2. **Expected to decrease in demand**: Items where demand is fading.
+      (STRATEGIC INVENTORY ACTION: Analyze the remaining weeks of this quarter. **Do NOT list keywords here.** Instead, explicitly categorize product sub-categories using exactly these phrases (format them in **bold**):
+      1. **${t.subHeadingIncrease}**: Items with rising demand.
+      2. **${t.subHeadingDecrease}**: Items where demand is fading.
       Explain the drivers: weather, holidays, or economic shifts.)
 
       ## ${t.sectionLookAhead} Q${nextQuarter} ${nextQuarterYear}

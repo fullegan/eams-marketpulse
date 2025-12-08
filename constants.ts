@@ -46,12 +46,14 @@ const TRANSLATIONS_DE: UiTranslations = {
   // Report Headings
   sectionExecutiveSummary: "Management Summary",
   sectionMarketHealth: "Aktuelle Marktlage & Trends",
-  sectionSeasonalDemand: "Saisonale Nachfrageschwankungen",
   sectionBuyerInfluencers: "Wichtige Einflussfaktoren für Käufer",
   sectionKeyTakeaways: "Wichtige Erkenntnisse & Handlungsempfehlungen",
   sectionKeywords: "Top-Keywords für eBay-Angebote",
   sectionCurrentQuarter: "Aktuelles Quartal",
-  sectionLookAhead: "Ausblick auf"
+  sectionLookAhead: "Ausblick auf",
+  // Sub-Headings
+  subHeadingIncrease: "Erwarteter Anstieg der Nachfrage",
+  subHeadingDecrease: "Erwarteter Rückgang der Nachfrage"
 };
 
 // Translations for French (FR)
@@ -85,12 +87,14 @@ const TRANSLATIONS_FR: UiTranslations = {
   // Report Headings
   sectionExecutiveSummary: "Synthèse",
   sectionMarketHealth: "Santé Actuelle du Marché & Tendances",
-  sectionSeasonalDemand: "Variations Saisonnières de la Demande",
   sectionBuyerInfluencers: "Facteurs Clés d'Influence des Acheteurs",
   sectionKeyTakeaways: "Points Clés & Conseils Pratiques",
   sectionKeywords: "Mots-clés Principaux pour les Annonces eBay",
   sectionCurrentQuarter: "Trimestre Actuel",
-  sectionLookAhead: "Perspectives pour"
+  sectionLookAhead: "Perspectives pour",
+  // Sub-Headings
+  subHeadingIncrease: "Hausse de la demande prévue",
+  subHeadingDecrease: "Baisse de la demande prévue"
 };
 
 // Translations for Italian (IT)
@@ -124,12 +128,14 @@ const TRANSLATIONS_IT: UiTranslations = {
   // Report Headings
   sectionExecutiveSummary: "Sintesi",
   sectionMarketHealth: "Salute Attuale del Mercato e Tendenze",
-  sectionSeasonalDemand: "Variazioni Stagionali della Domanda",
   sectionBuyerInfluencers: "Fattori Chiave di Influenza sugli Acquirenti",
   sectionKeyTakeaways: "Punti Chiave e Consigli Pratici",
   sectionKeywords: "Parole Chiave Principali per le Inserzioni eBay",
   sectionCurrentQuarter: "Trimestre Attuale",
-  sectionLookAhead: "Prospettive per"
+  sectionLookAhead: "Prospettive per",
+  // Sub-Headings
+  subHeadingIncrease: "Aumento della domanda previsto",
+  subHeadingDecrease: "Calo della domanda previsto"
 };
 
 // Default English (UK, US, AU)
@@ -151,12 +157,14 @@ const TRANSLATIONS_EN: UiTranslations = {
   // Report Headings
   sectionExecutiveSummary: "Executive Summary",
   sectionMarketHealth: "Current Market Health & Trends",
-  sectionSeasonalDemand: "Seasonal Demand Variations",
   sectionBuyerInfluencers: "Key Buyer Influencers",
   sectionKeyTakeaways: "Key Takeaways & Actionable Advice",
   sectionKeywords: "Top Keywords for eBay Listings",
   sectionCurrentQuarter: "Current Quarter",
-  sectionLookAhead: "Look Ahead to"
+  sectionLookAhead: "Look Ahead to",
+  // Sub-Headings
+  subHeadingIncrease: "Expected to increase in demand",
+  subHeadingDecrease: "Expected to drop in demand"
 };
 
 // Helper to get the correct translation set
