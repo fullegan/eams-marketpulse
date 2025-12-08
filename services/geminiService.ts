@@ -19,7 +19,7 @@ if (!apiKey) {
 const ai = new GoogleGenAI({ apiKey: apiKey || '' });
 
 export const fetchVerticalInsights = async (
-  vertical: string,
+  vertical: string, 
   forceEnglish: boolean = false
 ): Promise<{ text: string; sources: GroundingChunk[] }> => {
   try {
@@ -30,12 +30,12 @@ export const fetchVerticalInsights = async (
 
     const { currentQuarter, nextQuarter, currentYear, nextQuarterYear } = getCurrentQuarterInfo();
     const market = getCurrentMarket();
-
+    
     // Logic: If forced to English, we use the 'UK' translations (which are English) for the headers
     // and explicitly tell the AI to write in English.
     const t = forceEnglish ? getTranslations('UK') : getTranslations(market.code);
     const targetLanguage = forceEnglish ? 'English' : market.language;
-
+    
     console.log(`Fetching insights for: ${vertical} (${market.code}). Language: ${targetLanguage}...`);
 
     // --- DYNAMIC SEASONAL CONTEXT GENERATION ---
@@ -65,11 +65,19 @@ export const fetchVerticalInsights = async (
       
       Your goal is to help sellers plan their **Inventory (Stock Levels)** and **Promoted Listings (Ad Spend)**.
 
-      **UNIVERSAL E-COMMERCE CONTEXT (Apply these where relevant to ${vertical}):**
+      **UNIVERSAL E-COMMERCE DRIVERS (Apply these where relevant to ${vertical}):**
       1. **Mobile-First:** ~70% of category visits are likely on mobile. Emphasize that listings and images must be optimized for small screens.
       2. **Visualisation:** Buyers increasingly value Augmented Reality (AR) and video for high-ticket items. Advise on using video in listings.
       3. **Consumer Psychology:** Emphasize "Pre-owned," "Refurbished," and "Sustainability" as key conversion drivers (78% of consumers value this).
+      4. **Financial Context:** Use the local currency of the ${market.name} market for all valuations.
       ${seasonalContext}
+
+      **STRICT OUTPUT FORMAT RULES:**
+      1. **Do NOT add a document title** (e.g., "Strategic Report for...").
+      2. **Do NOT add an introduction text.**
+      3. **Start IMMEDIATELY with the first section header (Markdown H2 / ##).**
+      4. **Use Markdown H2 (##) for all Main Section Headers.** (This ensures they are styled Blue).
+      5. **Do NOT use H1 (#) anywhere.**
 
       The report must follow this exact Markdown structure:
 
@@ -77,7 +85,7 @@ export const fetchVerticalInsights = async (
       (A concise, executive-level overview of the vertical's health and immediate opportunities.)
 
       ## ${t.sectionMarketHealth}
-      (Analysis of growth areas vs. declining segments. **Specific Requirement:** Include specific financial market valuation projections (e.g., "Market valued at [Local Currency of ${market.name}] X bn") if data is available in the search grounding.)
+      (Analysis of growth areas vs. declining segments. **Specific Requirement:** Include specific financial market valuation projections (e.g., "Market valued at [Local Currency] X bn") if data is available in the search grounding.)
 
       ## ${t.sectionCurrentQuarter} (Q${currentQuarter} ${currentYear})
       (STRATEGIC INVENTORY ACTION: Analyze the remaining weeks of this quarter. **Do NOT list keywords here.** Instead, explicitly categorize product sub-categories into:
