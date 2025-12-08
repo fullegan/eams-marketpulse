@@ -13,7 +13,8 @@ export interface ApiResult {
 
 export interface MarketConfig {
   name: string;
-  code: 'UK' | 'US' | 'DE' | 'AU' | 'FR' | 'IT';
+  // Expanded list of supported market codes
+  code: 'UK' | 'US' | 'DE' | 'AU' | 'FR' | 'IT' | 'ES' | 'NL' | 'CA' | 'CA-FR' | 'IE' | 'AT' | 'PL' | 'CH' | 'BE-NL' | 'BE-FR' | 'HK' | 'MY' | 'PH' | 'SG';
   platformName: string;
   language: string;
 }

@@ -138,6 +138,129 @@ const TRANSLATIONS_IT: UiTranslations = {
   subHeadingDecrease: "Calo della domanda previsto"
 };
 
+// Translations for Spanish (ES)
+const TRANSLATIONS_ES: UiTranslations = {
+  welcomeTitle: "Bienvenido a eAMS Marketpulse",
+  welcomeIntro: "Esta herramienta proporciona análisis de mercado en tiempo real e información estratégica para las categorías de eBay.",
+  welcomeInstruction: "Para comenzar, seleccione una categoría en el menú de la izquierda.",
+  loadingMessage: "Cargando información para",
+  errorMessage: "Ocurrió un error",
+  reportTitleSuffix: "Informe de Mercado",
+  lastUpdated: "Última actualización",
+  copyButton: "Copiar informe",
+  copiedButton: "¡Copiado!",
+  updateButton: "Actualizar informe",
+  downloadButton: "Descargar PDF",
+  sourcesTitle: "Fuentes",
+  footerText: "Impulsado por",
+  verticals: [
+    "Motor: piezas y accesorios",
+    "Casa y Jardín",
+    "Estilo de vida",
+    "Equipamiento y maquinaria",
+    "Electrónica",
+    "Moda",
+    "Juguetes y juegos",
+    "Belleza y Salud",
+    "Deportes",
+    "Coleccionismo",
+    "Cine, DVD y Películas"
+  ],
+  // Report Headings
+  sectionExecutiveSummary: "Resumen Ejecutivo",
+  sectionMarketHealth: "Salud del Mercado y Tendencias",
+  sectionBuyerInfluencers: "Factores Clave de Influencia en el Comprador",
+  sectionKeyTakeaways: "Puntos Clave y Consejos Prácticos",
+  sectionKeywords: "Palabras Clave Principales para Anuncios de eBay",
+  sectionCurrentQuarter: "Trimestre Actual",
+  sectionLookAhead: "Perspectivas para",
+  // Sub-Headings
+  subHeadingIncrease: "Se espera un aumento en la demanda",
+  subHeadingDecrease: "Se espera una caída en la demanda"
+};
+
+// Translations for Dutch (NL)
+const TRANSLATIONS_NL: UiTranslations = {
+  welcomeTitle: "Welkom bij eAMS Marketpulse",
+  welcomeIntro: "Deze tool biedt realtime marktanalyses en strategische inzichten voor eBay-categorieën.",
+  welcomeInstruction: "Selecteer een categorie in het menu links om te beginnen.",
+  loadingMessage: "Inzichten ophalen voor",
+  errorMessage: "Er is een fout opgetreden",
+  reportTitleSuffix: "Marktrapport",
+  lastUpdated: "Laatst bijgewerkt",
+  copyButton: "Rapport kopiëren",
+  copiedButton: "Gekopieerd!",
+  updateButton: "Rapport bijwerken",
+  downloadButton: "PDF downloaden",
+  sourcesTitle: "Bronnen",
+  footerText: "Mogelijk gemaakt door",
+  verticals: [
+    "Auto-onderdelen en accessoires",
+    "Tuin en terras",
+    "Lifestyle",
+    "Professionele uitrusting",
+    "Elektronica",
+    "Kleding en accessoires",
+    "Speelgoed en spellen",
+    "Mooi en gezond",
+    "Sport en vakantie",
+    "Verzamelen",
+    "Films en dvd's"
+  ],
+  // Report Headings
+  sectionExecutiveSummary: "Management Samenvatting",
+  sectionMarketHealth: "Huidige Marktsituatie & Trends",
+  sectionBuyerInfluencers: "Belangrijkste Invloedsfactoren voor Kopers",
+  sectionKeyTakeaways: "Belangrijkste Inzichten & Advies",
+  sectionKeywords: "Top Zoekwoorden voor eBay-advertenties",
+  sectionCurrentQuarter: "Huidig Kwartaal",
+  sectionLookAhead: "Vooruitblik op",
+  // Sub-Headings
+  subHeadingIncrease: "Verwachte stijging van de vraag",
+  subHeadingDecrease: "Verwachte daling van de vraag"
+};
+
+// Translations for Polish (PL)
+const TRANSLATIONS_PL: UiTranslations = {
+  welcomeTitle: "Witamy w eAMS Marketpulse",
+  welcomeIntro: "To narzędzie zapewnia analizy rynku w czasie rzeczywistym i strategiczne wskazówki dla kategorii eBay.",
+  welcomeInstruction: "Aby rozpocząć, wybierz kategorię z menu po lewej stronie.",
+  loadingMessage: "Pobieranie danych dla",
+  errorMessage: "Wystąpił błąd",
+  reportTitleSuffix: "Raport Rynkowy",
+  lastUpdated: "Ostatnia aktualizacja",
+  copyButton: "Kopiuj raport",
+  copiedButton: "Skopiowano!",
+  updateButton: "Aktualizuj raport",
+  downloadButton: "Pobierz PDF",
+  sourcesTitle: "Źródła",
+  footerText: "Wspierane przez",
+  verticals: [
+    "Motoryzacja: Części i akcesoria",
+    "Dom i Ogród",
+    "Styl życia",
+    "Firma i Przemysł",
+    "Elektronika",
+    "Moda",
+    "Zabawki",
+    "Uroda i Zdrowie",
+    "Sport i Turystyka",
+    "Kolekcje",
+    "Filmy i DVD"
+  ],
+  // Report Headings
+  sectionExecutiveSummary: "Podsumowanie Wykonawcze",
+  sectionMarketHealth: "Kondycja Rynku i Trendy",
+  sectionBuyerInfluencers: "Kluczowe Czynniki Wpływające na Kupujących",
+  sectionKeyTakeaways: "Kluczowe Wnioski i Porady",
+  sectionKeywords: "Najlepsze Słowa Kluczowe dla Ofert eBay",
+  sectionCurrentQuarter: "Obecny Kwartał",
+  sectionLookAhead: "Perspektywy na",
+  // Sub-Headings
+  subHeadingIncrease: "Oczekiwany wzrost popytu",
+  subHeadingDecrease: "Oczekiwany spadek popytu"
+};
+
 // Default English (UK, US, AU)
 const TRANSLATIONS_EN: UiTranslations = {
   welcomeTitle: "Welcome to eAMS Marketpulse",
@@ -170,12 +293,38 @@ const TRANSLATIONS_EN: UiTranslations = {
 // Helper to get the correct translation set
 export const getTranslations = (code: MarketConfig['code']): UiTranslations => {
   switch (code) {
-    case 'DE': return TRANSLATIONS_DE;
-    case 'FR': return TRANSLATIONS_FR;
-    case 'IT': return TRANSLATIONS_IT;
+    case 'DE': 
+    case 'AT': // Austria uses German
+    case 'CH': // Switzerland (Mapped to German default)
+      return TRANSLATIONS_DE;
+
+    case 'FR': 
+    case 'BE-FR': // Belgium (French)
+    case 'CA-FR': // Canada (French)
+      return TRANSLATIONS_FR;
+
+    case 'IT': 
+      return TRANSLATIONS_IT;
+
+    case 'ES': 
+      return TRANSLATIONS_ES;
+
+    case 'NL': 
+    case 'BE-NL': // Belgium (Dutch)
+      return TRANSLATIONS_NL;
+
+    case 'PL': 
+      return TRANSLATIONS_PL;
+
     case 'UK':
     case 'US':
     case 'AU':
+    case 'CA': // Canada (English)
+    case 'IE': // Ireland
+    case 'HK': // Hong Kong
+    case 'MY': // Malaysia
+    case 'PH': // Philippines
+    case 'SG': // Singapore
     default:
       return TRANSLATIONS_EN;
   }
