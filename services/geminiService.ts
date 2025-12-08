@@ -1,4 +1,3 @@
-
 import { GoogleGenAI } from "@google/genai";
 import type { GroundingChunk } from '../types';
 import { getCurrentQuarterInfo } from '../utils';
@@ -19,7 +18,10 @@ if (!apiKey) {
 // We only need a single instance of the AI client.
 const ai = new GoogleGenAI({ apiKey: apiKey || '' });
 
-export const fetchVerticalInsights = async (vertical: string, forceEnglish: boolean = false): Promise<{ text: string, sources: GroundingChunk[] }> => {
+export const fetchVerticalInsights = async (
+  vertical: string,
+  forceEnglish: boolean = false
+): Promise<{ text: string; sources: GroundingChunk[] }> => {
   try {
     // Fail fast if no key is present to avoid unnecessary network calls
     if (!apiKey) {
@@ -28,12 +30,12 @@ export const fetchVerticalInsights = async (vertical: string, forceEnglish: bool
 
     const { currentQuarter, nextQuarter, currentYear, nextQuarterYear } = getCurrentQuarterInfo();
     const market = getCurrentMarket();
-    
+
     // Logic: If forced to English, we use the 'UK' translations (which are English) for the headers
     // and explicitly tell the AI to write in English.
     const t = forceEnglish ? getTranslations('UK') : getTranslations(market.code);
     const targetLanguage = forceEnglish ? 'English' : market.language;
-    
+
     console.log(`Fetching insights for: ${vertical} (${market.code}). Language: ${targetLanguage}...`);
 
     // --- DYNAMIC SEASONAL CONTEXT GENERATION ---
@@ -57,7 +59,7 @@ export const fetchVerticalInsights = async (vertical: string, forceEnglish: bool
     }
 
     const prompt = `
-      Act as a senior e-commerce strategy consultant for eBay's ${market.name} market. 
+      Act as a senior e-commerce strategy consultant for eBay's ${market.name} market.
       Provide a high-level, professional strategic report for sellers in the "${vertical}" vertical.
       The report must be written in ${targetLanguage}.
       
@@ -75,10 +77,16 @@ export const fetchVerticalInsights = async (vertical: string, forceEnglish: bool
       (A concise, executive-level overview of the vertical's health and immediate opportunities.)
 
       ## ${t.sectionMarketHealth}
-      (Analysis of growth areas vs. declining segments. **Specific Requirement:** Include specific financial market valuation projections (e.g., "Market valued at [Local Currency] X bn") if data is available in the search grounding.)
+      (Analysis of growth areas vs. declining segments. **Specific Requirement:** Include specific financial market valuation projections (e.g., "Market valued at [Local Currency of ${market.name}] X bn") if data is available in the search grounding.)
 
-      ## ${t.sectionSeasonalDemand} & Inventory Strategy
-      (Identify key seasonal peaks. **Crucial:** Explicitly list items to "Stock Up / Increase Spend" and items to "Clearance / Reduce Spend" based on upcoming trends.)
+      ## ${t.sectionCurrentQuarter} (Q${currentQuarter} ${currentYear})
+      (STRATEGIC INVENTORY ACTION: Analyze the remaining weeks of this quarter. **Do NOT list keywords here.** Instead, explicitly categorize product sub-categories into:
+      1. **SURGE (Stock Up Now)**: Items with rising demand.
+      2. **DECLINE (Clearance/Reduce)**: Items where demand is fading.
+      Explain the drivers: weather, holidays, or economic shifts.)
+
+      ## ${t.sectionLookAhead} Q${nextQuarter} ${nextQuarterYear}
+      (FUTURE PLANNING: **Do NOT list keywords here.** Focus on Long-lead ordering. What inventory should sellers order NOW to be ready for next quarter? Focus on early seasonal shifts and macro-trends. Identify the 'Early Bird' opportunities.)
 
       ## ${t.sectionBuyerInfluencers}
       (What drives conversion in this category right now? e.g., Speed, Price, Eco-friendly, Bundles. Incorporate the Mobile-First and Visualisation insights here.)
@@ -87,20 +95,14 @@ export const fetchVerticalInsights = async (vertical: string, forceEnglish: bool
       (3-5 bullet points of concrete actions the seller should take immediately. Include a point on Sustainability/Consumer Psychology.)
 
       ## ${t.sectionKeywords}
-      (A list of the top 10-15 high-volume search terms. Format this as a clean list.)
-
-      ### ${t.sectionCurrentQuarter} (Q${currentQuarter} ${currentYear})
-      (Strategic Demand Forecast: **Do NOT list keywords here.** Instead, analyze which specific product sub-categories are expected to see a **SURGE** in demand (Stock Up) and which will **DECLINE** (Clearance) in the remaining weeks of this quarter. Explain the drivers: weather, holidays, or economic shifts.)
-
-      ### ${t.sectionLookAhead} Q${nextQuarter} ${nextQuarterYear}
-      (Forward Planning: **Do NOT list keywords here.** What inventory should sellers order NOW to be ready for next quarter? Focus on early seasonal shifts and macro-trends. Identify the 'Early Bird' opportunities.)
+      (STRICT FORMAT: Provide a clean list of 10-15 high-volume search terms. Do NOT add commentary, sub-sections, or analysis here. Just the terms.)
     `;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash", 
       contents: prompt,
       config: {
-        tools: [{googleSearch: {}}],
+        tools: [{ googleSearch: {} }],
       },
     });
 
@@ -125,6 +127,7 @@ export const fetchVerticalInsights = async (vertical: string, forceEnglish: bool
     
     console.log("Insights successfully retrieved.");
     return { text, sources };
+
   } catch (error: any) {
     console.error("Error fetching insights from Gemini API:", error);
     
