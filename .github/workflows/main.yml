@@ -2,7 +2,9 @@ name: Build Status
 
 on:
   push:
-    branches: [main, develop]
+    branches:
+      - main
+      - develop
 
 jobs:
   build:
