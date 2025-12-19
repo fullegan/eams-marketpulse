@@ -8,9 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: [self-hosted, NG-LAPTOP]
-    defaults:
-      run:
-        working-directory: eams-marketpulse-main 
+   
     steps:
       - uses: actions/checkout@v4
       
@@ -26,7 +24,6 @@ jobs:
         run: npm run build
         
       - name: Deploy to Vercel
-        # This uses the Vercel CLI to push the build to your production site
         run: npx vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
