@@ -3,7 +3,7 @@
     on: [push]
     jobs:
       build:
-        runs-on: ubuntu-latest
+        runs-on: self-hosted, NG-LAPTOP
         steps:
           - uses: actions/checkout@v4
           - uses: actions/setup-node@v4
