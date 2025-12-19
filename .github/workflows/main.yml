@@ -1,9 +1,9 @@
-```yaml
-    name: Build Status
+name: Build Status
     on: [push]
     jobs:
       build:
-        runs-on: self-hosted, NG-LAPTOP
+        # Use an array [] to specify multiple labels
+        runs-on: [self-hosted, NG-LAPTOP] 
         steps:
           - uses: actions/checkout@v4
           - uses: actions/setup-node@v4
@@ -11,4 +11,3 @@
               node-version: 20
           - run: npm install
           - run: npm run build
-    ```
