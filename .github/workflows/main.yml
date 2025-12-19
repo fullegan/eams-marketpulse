@@ -1,14 +1,15 @@
 name: Build Status
-
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [main, develop]
 
 jobs:
   build:
     runs-on: [self-hosted, NG-LAPTOP]
+    # This tells GitHub to run everything inside your actual project subfolder
+    defaults:
+      run:
+        working-directory: eams-marketpulse-main 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
