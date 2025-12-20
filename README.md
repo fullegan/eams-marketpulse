@@ -1,7 +1,7 @@
 
 # eAMS Marketpulse
 
-![Build Status](https://github.corp.ebay.com/ngeoghegan/eams-marketpulse/actions/workflows/main.yml/badge.svg)
+![Build Status](https://github.corp.ebay.com/ngeoghegan/eams-marketpulse/actions/workflows/main.yml/badge.svg?branch=develop&event=push)
 ![Gemini AI](https://img.shields.io/badge/Gemini_2.5_Flash-8E75B2?style=flat-square&logo=googlegemini&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
@@ -119,4 +119,5 @@ We welcome contributions from the eAMS team! To maintain stability, please follo
 * **Fix:** Check `vite.config.ts` logs in Vercel to ensure the name matches your region.
 
 ---
-© 2025 eBay Advertising Managed Services (eAMS)
+© 2025 eBay Advertising Managed Services (eAMS)  
+"Last updated: [19/12/2026:18:18]"
