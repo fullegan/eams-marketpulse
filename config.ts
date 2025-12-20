@@ -1,3 +1,4 @@
+
 import type { MarketConfig } from './types';
 
 export const MARKETS: MarketConfig[] = [
@@ -8,7 +9,7 @@ export const MARKETS: MarketConfig[] = [
   { name: 'France', code: 'FR', platformName: 'the eBay.fr platform', language: 'French' },
   { name: 'Italy', code: 'IT', platformName: 'the eBay.it platform', language: 'Italian' },
   { name: 'Australia', code: 'AU', platformName: 'the eBay.com.au platform', language: 'English' },
-
+  
   // --- North America ---
   { name: 'Canada (English)', code: 'CA', platformName: 'the eBay.ca platform', language: 'English' },
   { name: 'Canada (French)', code: 'CA-FR', platformName: 'the eBay.ca (French) platform', language: 'French' },
@@ -19,7 +20,7 @@ export const MARKETS: MarketConfig[] = [
   { name: 'Austria', code: 'AT', platformName: 'the eBay.at platform', language: 'German' },
   { name: 'Ireland', code: 'IE', platformName: 'the eBay.ie platform', language: 'English' },
   { name: 'Poland', code: 'PL', platformName: 'the eBay.pl platform', language: 'Polish' },
-  { name: 'Switzerland', code: 'CH', platformName: 'the eBay.ch platform', language: 'German' }, // Defaulting to German
+  { name: 'Switzerland', code: 'CH', platformName: 'the eBay.ch platform', language: 'German' },
   { name: 'Belgium (Dutch)', code: 'BE-NL', platformName: 'the benl.ebay.be platform', language: 'Dutch' },
   { name: 'Belgium (French)', code: 'BE-FR', platformName: 'the befr.ebay.be platform', language: 'French' },
 
@@ -31,21 +32,14 @@ export const MARKETS: MarketConfig[] = [
 ];
 
 // --- DYNAMIC MARKET CONFIGURATION ---
-// We check if an Environment Variable is set (e.g., in Vercel).
-// If not found, we default to 'UK' for local development.
-const envCode = import.meta.env.VITE_MARKET_CODE;
-
-export const CURRENT_MARKET_CODE: MarketConfig['code'] = (envCode as MarketConfig['code']) || 'UK';
+// Accessing market code from process.env (mapped in vite.config.ts)
+export const CURRENT_MARKET_CODE: MarketConfig['code'] = (process.env.VITE_MARKET_CODE as MarketConfig['code']) || 'UK';
 // ------------------------------------
 
 export const getCurrentMarket = (): MarketConfig => {
   const market = MARKETS.find(m => m.code === CURRENT_MARKET_CODE);
-
   if (!market) {
-    // Fallback to UK if an invalid code was provided in the environment
-    console.warn(`Market configuration for code "${CURRENT_MARKET_CODE}" not found. Falling back to UK.`);
     return MARKETS.find(m => m.code === 'UK')!;
   }
-
   return market;
 };
