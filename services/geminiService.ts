@@ -1,4 +1,3 @@
-
 import { GoogleGenAI } from "@google/genai";
 import type { GroundingChunk } from '../types';
 import { getCurrentQuarterInfo } from '../utils';
@@ -27,8 +26,7 @@ export const fetchVerticalInsights = async (vertical: string, forceEnglish: bool
       - **Promoted Stores (PS)**
       - **Promoted Offsite (PO)**
 
-      *Referencing Rules:* 
-      1. Introduce the full name and abbreviation together ONLY ONCE (e.g., "Promoted Listings General (PLG)"). 
+      *Referencing Rules:* 1. Introduce the full name and abbreviation together ONLY ONCE (e.g., "Promoted Listings General (PLG)"). 
       2. After the first mention, use either the full name OR the abbreviation, but never both in parentheses.
       3. CRITICAL: Never use the term "halo" or "halo attribution" in relation to PLG. This terminology is deprecated. Focus on "Total Advertising Cost of Sale" (TACOS) and "ad rate caps" instead.
 
@@ -51,25 +49,29 @@ export const fetchVerticalInsights = async (vertical: string, forceEnglish: bool
       ## ${t.sectionExecutiveSummary}
       ## ${t.sectionMarketHealth}
       ## ${t.sectionCurrentQuarter} (Q${currentQuarter} ${currentYear})
-         ### ${t.subHeadingIncrease}
-         ### ${t.subHeadingDecrease}
+          ### ${t.subHeadingIncrease}
+          ### ${t.subHeadingDecrease}
       ## ${t.sectionLookAhead} Q${nextQuarter} ${nextQuarterYear}
-         ### ${t.subHeadingIncrease}
-         ### ${t.subHeadingDecrease}
+          ### ${t.subHeadingIncrease}
+          ### ${t.subHeadingDecrease}
       ## ${t.sectionBuyerInfluencers}
       ## ${t.sectionKeyTakeaways}
       ## ${t.sectionKeywords}
     `;
 
-    // Create a new GoogleGenAI instance right before making an API call to ensure it always uses the most up-to-date API key.
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    // Updated to use the correct Vite environment variable syntax
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
     
     const response = await ai.models.generateContent({
       model: "gemini-3-pro-preview", 
       contents: prompt,
       config: {
         tools: [{googleSearch: {}}],
-        thinkingConfig: { thinkingBudget: 4000 }
+        // Updated 'thinkingLevel' for Gemini 3 compatibility to resolve TS2353
+        thinkingConfig: { 
+          thinkingLevel: 'high',
+          includeThoughts: true 
+        }
       },
     });
 

@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: [self-hosted, NG-LAPTOP]
-   
+    
     steps:
       - uses: actions/checkout@v4
       
@@ -21,10 +21,14 @@ jobs:
         run: npm install
         
       - name: Build Project
+        # We inject the API key here so Vite can bake it into your production files
         run: npm run build
+        env:
+          VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
         
       - name: Deploy to Vercel
-        run: npx vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
+        # Added --build-env flag to ensure the key is available during Vercel's final deployment step
+        run: npx vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --yes --build-env VITE_API_KEY=${{ secrets.VITE_API_KEY }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
