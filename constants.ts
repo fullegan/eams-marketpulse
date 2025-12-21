@@ -1,3 +1,4 @@
+
 import type { UiTranslations, MarketConfig } from './types';
 
 // The Master List of Verticals (English) - kept for reference or fallback

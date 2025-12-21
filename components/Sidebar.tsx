@@ -10,29 +10,30 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ verticals, selectedVertical, onSelectVertical, isLoading }) => {
   return (
-    <aside className="w-full md:w-1/4 lg:w-1/5 bg-white p-4 md:p-6 shadow-lg md:h-screen md:sticky md:top-0 overflow-y-auto">
-      <div className="text-center mb-2">
-        <div className="inline-block"> {/* This container shrinks to fit the content width */}
-          <div className="flex items-center justify-center">
-             <img 
-               src="/images/sidebar-menu.png" 
-               alt="eAMS Logo" 
-               className="h-28 w-auto object-contain" 
-             />
-          </div>
+    <aside className="w-full md:w-1/4 lg:w-1/5 bg-white shadow-xl md:h-screen md:sticky md:top-0 overflow-y-auto flex flex-col z-20 border-none scrollbar-hide">
+      {/* Minimized top and bottom padding around the logo to save vertical space */}
+      <div className="w-full pt-5 pb-3 px-4 flex-shrink-0">
+        <div className="w-full flex items-center justify-center">
+          <img 
+            src="/images/sidebar-menu.png" 
+            alt="eAMS Logo" 
+            className="w-full max-w-[220px] h-auto object-contain" 
+          />
         </div>
       </div>
-      <nav>
-        <ul className="space-y-2">
+      
+      {/* Tightened navigation spacing */}
+      <nav className="px-4 py-1 flex-grow">
+        <ul className="space-y-0.5">
           {verticals.map((vertical) => (
             <li key={vertical}>
               <button
                 onClick={() => onSelectVertical(vertical)}
                 disabled={isLoading}
-                className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors duration-200 text-gray-700 font-medium
+                className={`w-full text-left px-4 py-2 rounded-lg transition-all duration-200 text-gray-700 font-semibold text-sm xl:text-base
                   ${selectedVertical === vertical
-                    ? 'bg-primary-600 text-white shadow-md'
-                    : 'hover:bg-primary-100 hover:text-primary-800'}
+                    ? 'bg-primary-600 text-white shadow-md transform scale-[1.01]'
+                    : 'hover:bg-primary-50 hover:text-primary-700'}
                   ${isLoading ? 'cursor-not-allowed opacity-60' : ''}
                 `}
               >
@@ -42,6 +43,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ verticals, selectedVertical, o
           ))}
         </ul>
       </nav>
+      
+      {/* Ensure no extra padding at the bottom */}
+      <div className="h-4 flex-shrink-0"></div>
+      
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </aside>
   );
 };
