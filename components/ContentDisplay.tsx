@@ -1,7 +1,14 @@
-
 import { useState } from 'react';
 import type { ApiResult, UiTranslations } from '../types';
-import { LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon, DownloadIcon, ChartLineIcon } from './Icons';
+import { 
+  LoadingSpinner, 
+  RefreshIcon, 
+  CopyIcon, 
+  GlobeIcon, 
+  DownloadIcon, 
+  ChartLineIcon,
+  EamsTextLogo
+} from './Icons';
 
 interface ContentDisplayProps {
   isLoading: boolean;
@@ -18,10 +25,19 @@ interface ContentDisplayProps {
 const SpecificReportStyles = () => (
   <style>{`
     #report-container {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
       color: #000000 !important;
-      -webkit-font-smoothing: auto !important;
-      text-rendering: geometricPrecision !important;
+      -webkit-font-smoothing: antialiased !important;
+      text-rendering: optimizeLegibility !important;
       background-color: #ffffff !important;
+    }
+    #report-container h1, 
+    #report-container h2, 
+    #report-container h3, 
+    #report-container p, 
+    #report-container li,
+    #report-container span {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
     }
     #report-container h2 {
       color: #0064D2 !important;
@@ -134,9 +150,15 @@ function ReportDisplay({
     const element = document.getElementById('report-container');
     const opt = {
       margin: [10, 10, 10, 10], 
-      filename: `${marketCode}_${vertical}_Report.pdf`,
+      filename: `${marketCode}_${vertical.replace(/\s+/g, '_')}_Report.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
+      html2canvas: { 
+        scale: 2, 
+        useCORS: true, 
+        logging: false,
+        letterRendering: true,
+        allowTaint: false
+      },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
     if (typeof window !== 'undefined' && (window as any).html2pdf) {
@@ -198,7 +220,6 @@ function ReportDisplay({
       } else if (trimmedLine.startsWith('## ')) {
         flushList();
         currentH2 = trimmedLine.substring(3);
-        // Removed pt-6 and border-t from h2 to reduce white space for the very first section
         elements.push(<h2 key={i} className="text-2xl font-extrabold mb-4 text-black first:mt-0 mt-8">{currentH2}</h2>);
       } else if (trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ')) {
         listItems.push(trimmedLine.replace(/^[-*]\s*/, ''));
@@ -222,36 +243,40 @@ function ReportDisplay({
   return (
     <div key={vertical} className="animate-fade-in pb-12">
       <SpecificReportStyles />
-      <div id="report-container" className="bg-white min-h-full">
-        {/* Header container is NOT ignored so it shows in PDF */}
-        <div className="md:flex justify-between items-start mb-4 p-8 bg-slate-50 border-b border-slate-200">
-          <div className="flex-grow">
-            <h1 className="text-4xl font-black text-black mb-4">{vertical} {t.reportTitleSuffix}</h1>
-            <div className="flex flex-wrap gap-3 text-sm font-bold">
-               <span className="bg-white px-4 py-2 rounded shadow-sm border border-gray-200 text-primary-700">Market: {marketCode}</span>
-               <span className="bg-white px-4 py-2 rounded shadow-sm border border-gray-200">{getFormattedDateTime()}</span>
+      <div id="report-container" className="bg-white min-h-full overflow-x-hidden">
+        <div className="md:flex justify-between items-center mb-4 p-6 bg-slate-50 border-b border-slate-200 gap-4">
+          <div className="flex-shrink flex-grow min-w-0">
+            <h1 className="font-black text-black leading-tight">
+              <span className="block text-2xl lg:text-4xl mb-1 truncate">{vertical}</span>
+              <span className="block text-xl lg:text-2xl text-gray-700 opacity-90">{t.reportTitleSuffix}</span>
+            </h1>
+            <div className="flex flex-wrap gap-2 text-xs lg:text-sm font-bold mt-3">
+               <span className="bg-white px-3 py-1.5 rounded shadow-sm border border-slate-200 text-primary-700">Market: {marketCode}</span>
+               <span className="bg-white px-3 py-1.5 rounded shadow-sm border border-slate-200">{getFormattedDateTime()}</span>
             </div>
           </div>
-          {/* Buttons are explicitly ignored in PDF */}
-          <div className="flex flex-col md:flex-row md:items-center gap-3 mt-4 md:mt-0 md:ml-4" data-html2canvas-ignore>
-            <button onClick={handleCopy} className="flex items-center justify-center px-5 py-2.5 bg-slate-700 text-white font-bold rounded-lg shadow-md hover:bg-slate-800 transition-all">
-              <CopyIcon className="w-5 h-5 mr-2" /> {isCopied ? t.copiedButton : t.copyButton}
-            </button>
-             <button onClick={handleDownloadPDF} className="flex items-center justify-center px-5 py-2.5 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-700 transition-all">
-              <DownloadIcon className="w-5 h-5 mr-2" /> {t.downloadButton}
-            </button>
-            <button onClick={onUpdateReport} disabled={isLoading} className="flex items-center justify-center px-5 py-2.5 bg-primary-600 text-white font-bold rounded-lg shadow-md hover:bg-primary-700 transition-all">
-              <RefreshIcon className={`w-5 h-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} /> {t.updateButton}
-            </button>
+          
+          <div className="flex flex-row items-center gap-4 flex-shrink-0">
+            <div className="flex-shrink-0 flex items-center justify-center mr-2">
+               {/* Updated to EamsTextLogo */}
+               <EamsTextLogo className="drop-shadow-sm" width={150} height={60} />
+            </div>
+
+            <div className="flex flex-row items-center gap-1.5" data-html2canvas-ignore>
+              <button onClick={handleCopy} className="flex items-center justify-center px-3 lg:px-4 py-2 bg-slate-700 text-white font-bold rounded-lg shadow-sm hover:bg-slate-800 transition-all whitespace-nowrap text-xs lg:text-sm">
+                <CopyIcon className="w-3.5 h-3.5 lg:w-4 lg:h-4 mr-1.5" /> {isCopied ? t.copiedButton : t.copyButton}
+              </button>
+               <button onClick={handleDownloadPDF} className="flex items-center justify-center px-3 lg:px-4 py-2 bg-green-600 text-white font-bold rounded-lg shadow-sm hover:bg-green-700 transition-all whitespace-nowrap text-xs lg:text-sm">
+                <DownloadIcon className="w-3.5 h-3.5 lg:w-4 lg:h-4 mr-1.5" /> {t.downloadButton}
+              </button>
+              <button onClick={onUpdateReport} disabled={isLoading} className="flex items-center justify-center px-3 lg:px-4 py-2 bg-primary-600 text-white font-bold rounded-lg shadow-sm hover:bg-primary-700 transition-all whitespace-nowrap text-xs lg:text-sm">
+                <RefreshIcon className={`w-3.5 h-3.5 lg:w-4 lg:h-4 mr-1.5 ${isLoading ? 'animate-spin' : ''}`} /> {t.updateButton}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* This PDF-only header is now redundant as we show the main header, but keeping small logo for branding */}
-        <div className="hidden pdf-only flex justify-end items-center px-8 py-4 border-b border-slate-100">
-           <img src="/images/sidebar-menu.png" alt="eAMS" className="h-10" />
-        </div>
-
-        <article className="max-w-none bg-white px-8 md:px-16 py-4 mx-auto text-black font-medium text-lg leading-relaxed max-w-5xl">
+        <article className="max-w-none bg-white px-8 md:px-16 py-8 mx-auto text-black font-medium text-lg leading-relaxed max-w-5xl">
           {renderFormattedText(result.text)}
         </article>
 
@@ -306,6 +331,7 @@ export function ContentDisplay({
       ) : error ? (
         <div className="flex items-center justify-center h-full"><div className="bg-red-50 p-10 rounded-2xl border border-red-200 text-center max-w-lg shadow-xl"><h3 className="text-2xl font-black text-red-700 mb-4">{translations.errorMessage}</h3><p className="text-red-600 font-semibold">{error}</p></div></div>
       ) : result && vertical ? (
+        /* Fixed: changed handleUpdateReport to onUpdateReport which is the correct prop name from the destructured arguments */
         <ReportDisplay result={result} vertical={vertical} isLoading={isLoading} onUpdateReport={onUpdateReport} t={translations} marketCode={marketCode} />
       ) : (
         <InitialState t={translations} />
