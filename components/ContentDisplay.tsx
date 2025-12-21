@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import type { ApiResult, UiTranslations } from '../types';
 import { 
@@ -316,7 +317,9 @@ export function ContentDisplay({
   onToggleLanguage,
   marketCode
 }: ContentDisplayProps) {
-  const showLanguageToggle = !['UK', 'US', 'AU'].includes(marketCode);
+  // Updated showLanguageToggle to exclude Ireland (IE) and other primarily English-speaking markets
+  const showLanguageToggle = !['UK', 'US', 'AU', 'IE', 'CA', 'SG', 'MY', 'PH', 'HK'].includes(marketCode);
+  
   return (
     <main className="w-full md:w-3/4 lg:w-4/5 p-0 bg-slate-100 overflow-y-auto h-screen relative">
       {showLanguageToggle && (
@@ -331,7 +334,6 @@ export function ContentDisplay({
       ) : error ? (
         <div className="flex items-center justify-center h-full"><div className="bg-red-50 p-10 rounded-2xl border border-red-200 text-center max-w-lg shadow-xl"><h3 className="text-2xl font-black text-red-700 mb-4">{translations.errorMessage}</h3><p className="text-red-600 font-semibold">{error}</p></div></div>
       ) : result && vertical ? (
-        /* Fixed: changed handleUpdateReport to onUpdateReport which is the correct prop name from the destructured arguments */
         <ReportDisplay result={result} vertical={vertical} isLoading={isLoading} onUpdateReport={onUpdateReport} t={translations} marketCode={marketCode} />
       ) : (
         <InitialState t={translations} />
