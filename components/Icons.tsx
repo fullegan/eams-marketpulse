@@ -1,6 +1,4 @@
 
-import { ReactNode } from 'react';
-
 /**
  * eAMS Typographic Logo
  * Displays "eAMS" in brand colors centered over "MARKETPULSE" subtext.
