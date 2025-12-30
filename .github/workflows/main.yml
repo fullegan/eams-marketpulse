@@ -11,17 +11,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
+
     - name: Install dependencies
       run: npm install
-    - name: Build
+
+    - name: Build project
       run: npm run build
       env:
-        # Provide dummy variables so Vite doesn't fail during CI checks
-        VITE_API_KEY: "ci_build_test"
+        # These are used to pass Vite's environment check during the CI build
+        VITE_API_KEY: "dummy_key_for_ci"
         VITE_MARKET_CODE: "UK"
