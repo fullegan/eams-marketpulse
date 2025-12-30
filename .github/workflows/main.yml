@@ -1,34 +1,27 @@
 name: Build and Deploy
+
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
 
 jobs:
-  build-and-deploy:
-    runs-on: [self-hosted, NG-LAPTOP]
-    
+  build:
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          
-      - name: Install Dependencies
-        run: npm install
-        
-      - name: Build Project
-        # We inject the API key here so Vite can bake it into your production files
-        run: npm run build
-        env:
-          VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
-        
-      - name: Deploy to Vercel
-        # Added --build-env flag to ensure the key is available during Vercel's final deployment step
-        run: npx vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --yes --build-env VITE_API_KEY=${{ secrets.VITE_API_KEY }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    - uses: actions/checkout@v4
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm install
+    - name: Build
+      run: npm run build
+      env:
+        # Provide dummy variables so Vite doesn't fail during CI checks
+        VITE_API_KEY: "ci_build_test"
+        VITE_MARKET_CODE: "UK"
