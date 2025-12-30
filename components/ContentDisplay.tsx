@@ -1,7 +1,16 @@
 
-import { useState } from 'react';
+// Add React to the import list to resolve namespace errors for React.ReactNode
+import React, { useState } from 'react';
 import type { ApiResult, UiTranslations } from '../types';
-import { LoadingSpinner, RefreshIcon, CopyIcon, GlobeIcon, DownloadIcon, ChartLineIcon } from './Icons';
+import {
+  LoadingSpinner,
+  RefreshIcon,
+  CopyIcon,
+  GlobeIcon,
+  DownloadIcon,
+  ChartLineIcon,
+  EamsTextLogo
+} from './Icons';
 
 interface ContentDisplayProps {
   isLoading: boolean;
@@ -18,80 +27,135 @@ interface ContentDisplayProps {
 const SpecificReportStyles = () => (
   <style>{`
     #report-container {
-      color: #000000 !important;
-      -webkit-font-smoothing: auto !important;
-      text-rendering: geometricPrecision !important;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+      color: #1f2937 !important;
+      -webkit-font-smoothing: antialiased !important;
+      text-rendering: optimizeLegibility !important;
       background-color: #ffffff !important;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+      position: relative;
     }
+
     #report-container h2 {
-      color: #0064D2 !important;
-      border-bottom: 2px solid #E5E7EB !important;
+      color: #111827 !important;
+      border-bottom: 2px solid #0064D2 !important;
       padding-bottom: 8px !important;
       margin-top: 32px !important;
       margin-bottom: 16px !important;
-      page-break-after: avoid !important;
-      font-size: 1.875rem !important;
+      font-size: 1.5rem !important;
       font-weight: 800 !important;
+      break-after: avoid !important;
+      page-break-after: avoid !important;
+      letter-spacing: -0.025em !important;
     }
+   
     #report-container h3 {
       display: flex;
       align-items: center;
-      margin-top: 20px !important;
-      margin-bottom: 10px !important;
-      font-size: 1.25rem !important;
+      margin-top: 24px !important;
+      margin-bottom: 12px !important;
+      font-size: 1.15rem !important;
       font-weight: 700 !important;
+      color: #374151 !important;
+      break-after: avoid !important;
+      page-break-after: avoid !important;
     }
-    #report-container p, #report-container li {
-      color: #000000 !important;
-      font-weight: 500 !important;
+
+    #report-container p {
+      color: #374151 !important;
+      font-weight: 400 !important;
+      line-height: 1.6 !important;
+      margin-bottom: 1rem !important;
+      text-align: justify !important;
+    }
+
+    #report-container li {
+      color: #374151 !important;
+      font-weight: 400 !important;
       line-height: 1.6 !important;
       margin-bottom: 0.75rem !important;
+      text-align: left !important;
     }
+
+    /* Clean Table Design */
+    #report-container table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      break-inside: avoid !important;
+      border-top: 2px solid #e5e7eb;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    #report-container th {
+      background-color: #f9fafb;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      font-weight: 700;
+      color: #111827;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+    #report-container td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+      color: #4b5563;
+    }
+    #report-container tr:last-child td {
+      border-bottom: none;
+    }
+
     #report-container .demand-up { color: #059669 !important; }
     #report-container .demand-down { color: #dc2626 !important; }
-    
-    #report-container .demand-icon-up { color: #059669 !important; }
-    #report-container .demand-icon-down { color: #dc2626 !important; }
-    
-    #report-container ul {
-      margin-bottom: 1.5rem !important;
+
+    /* PDF LAYOUT FIX: Centered with Auto Margins */
+    .is-pdf#report-container {
+       width: 190mm !important;
+       min-width: 190mm !important;
+       max-width: 190mm !important;
+       padding: 10mm !important;
+       margin: 0 auto !important;
+       overflow: visible !important;
+       box-sizing: border-box !important;
+       background-color: white !important;
     }
-    
+   
+    .is-pdf .report-header {
+        width: 100% !important;
+        padding: 0 0 20px 0 !important;
+        border-bottom: 3px solid #000 !important;
+        margin-bottom: 30px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: flex-start !important;
+    }
+
     @media print {
-      .pdf-only { display: flex !important; }
+      #report-container h2 { margin-top: 40px !important; }
+      #report-container p { font-size: 10pt !important; }
+      #report-container footer { margin-top: 50px !important; border-top: 1px solid #000 !important; padding-top: 20px !important;}
     }
   `}</style>
 );
 
 function AppFooter({ text }: { text: string }) {
   return (
-    <footer className="text-center py-8 mt-8 border-t border-gray-200" data-html2canvas-ignore>
-      <p className="text-sm text-gray-500 mb-2">
-        {text} <span className="font-bold text-gray-700">eAMS Marketpulse</span>
-      </p>
-      <p className="text-xs text-gray-400 max-w-2xl mx-auto px-4 italic">
-        Disclaimer: This report is generated by AI using real-time search data for strategic planning. 
-        Specific financial decisions should be verified with official eBay data sources.
-      </p>
-    </footer>
-  );
-}
-
-function InitialState({ t }: { t: UiTranslations }) {
-  return (
-    <div className="flex flex-col items-center justify-center h-full text-center text-gray-800 p-8 animate-fade-in">
-      <div className="flex-grow flex flex-col items-center justify-center">
-        <div className="w-full max-w-lg flex flex-col items-center">
-          <img src="/images/welcome-page.png" alt="eAMS Marketpulse" className="w-full h-auto object-contain" />
-        </div>
-        <div className="mt-4 max-w-2xl">
-          <h2 className="text-3xl font-bold text-black">{t.welcomeTitle}</h2>
-          <p className="mt-4 text-xl font-medium text-gray-900">{t.welcomeIntro}</p>
-          <p className="mt-2 text-lg text-gray-900">{t.welcomeInstruction}</p>
-        </div>
+    <footer className="w-full py-12 mt-12 border-t border-gray-100 bg-white">
+      <div className="flex flex-col items-center justify-center text-center">
+        <p className="text-2xl text-gray-800 font-bold mb-4">
+          {text} eAMS Marketpulse
+        </p>
+        <p className="text-sm text-gray-600 italic leading-relaxed max-w-2xl px-8">
+          Disclaimer: This report is generated by AI using real-time search data for strategic planning.
+          Specific financial decisions should be verified with official eBay data sources.
+        </p>
       </div>
-      <AppFooter text={t.footerText} />
-    </div>
+    </footer>
   );
 }
 
@@ -132,15 +196,39 @@ function ReportDisplay({
 
   const handleDownloadPDF = () => {
     const element = document.getElementById('report-container');
-    const opt = {
-      margin: [10, 10, 10, 10], 
-      filename: `${marketCode}_${vertical}_Report.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    if (!element) return;
+
+    element.classList.add('is-pdf');
+    const originalStyles = {
+      width: element.style.width,
+      maxWidth: element.style.maxWidth,
+      margin: element.style.margin,
+      padding: element.style.padding,
     };
+
+    const opt = {
+      margin: 10,
+      filename: `${marketCode}_${vertical.replace(/\s+/g, '_')}_Report.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        letterRendering: true,
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+
     if (typeof window !== 'undefined' && (window as any).html2pdf) {
-      (window as any).html2pdf().set(opt).from(element).save();
+      (window as any).html2pdf().set(opt).from(element).save().then(() => {
+        element.classList.remove('is-pdf');
+        Object.assign(element.style, originalStyles);
+      }).catch((err: any) => {
+        console.error("PDF Export Error:", err);
+        element.classList.remove('is-pdf');
+        Object.assign(element.style, originalStyles);
+      });
     }
   };
 
@@ -150,72 +238,166 @@ function ReportDisplay({
     return date.toLocaleString(locale, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   };
 
+  const parseMarkdown = (text: string) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={index} className="font-bold text-gray-900">{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+  };
+
   const renderFormattedText = (text: string) => {
-    const lines = text.split('\n');
+    // PRE-PROCESS: Detect cases where a numbered list item starts in the middle of a line 
+    // (e.g. "1. Item 1 2. Item 2") and insert a newline.
+    const sanitizedText = text.replace(/(\s)(\d+\.)(\s\*\*)/g, '\n$2$3');
+    
+    const lines = sanitizedText.split('\n');
     const elements: React.ReactNode[] = [];
     let listItems: string[] = [];
+    let isNumberedList = false;
+    let tableRows: string[][] = [];
     let currentH2: string = '';
+   
+    let paragraphBuffer: string[] = [];
+
+    const flushParagraph = () => {
+      if (paragraphBuffer.length > 0) {
+        const content = paragraphBuffer.join(' ').replace(/\s+/g, ' ').trim();
+        if (content) {
+          elements.push(
+            <p key={`p-${elements.length}`} className="mb-4 text-gray-700 leading-relaxed">
+              {parseMarkdown(content)}
+            </p>
+          );
+        }
+        paragraphBuffer = [];
+      }
+    };
 
     const flushList = () => {
       if (listItems.length > 0) {
+        const isDemandList = currentH2.toLowerCase().includes('quarter') || currentH2.toLowerCase().includes('quartal') || currentH2.toLowerCase().includes('trimestre');
+        const ListTag = isNumberedList ? 'ol' : 'ul';
         elements.push(
-          <ul key={`ul-${elements.length}`} className="list-disc space-y-2 pl-8 mb-6 text-black marker:text-gray-400 font-medium">
-            {listItems.map((item, j) => (
-              <li key={j} className="text-black">{item}</li>
-            ))}
-          </ul>
+          <ListTag key={`l-${elements.length}`} className={`space-y-3 pl-6 mb-6 text-gray-700 ${isNumberedList ? 'list-decimal' : 'list-disc marker:text-gray-400'} ${isDemandList ? 'demand-list' : ''}`}>
+            {listItems.map((item, j) => (<li key={j}>{parseMarkdown(item)}</li>))}
+          </ListTag>
         );
         listItems = [];
+        isNumberedList = false;
+      }
+    };
+
+    const flushTable = () => {
+      if (tableRows.length > 0) {
+        let headerRow: string[] | null = null;
+        let dataRows = [...tableRows];
+        if (dataRows.length > 1 && dataRows[1].every(cell => cell.trim().match(/^:?-+:?$/))) {
+            headerRow = dataRows[0];
+            dataRows = dataRows.slice(2);
+        }
+        elements.push(
+          <div key={`table-${elements.length}`} className="overflow-hidden mb-8 mt-4 rounded-lg border border-gray-200">
+            <table className="min-w-full">
+              {headerRow && (
+                <thead className="bg-gray-50">
+                  <tr>
+                    {headerRow.map((cell, idx) => (
+                      <th key={idx} className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                        {cell.trim().replace(/\*\*/g, '')}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+              )}
+              <tbody className="bg-white">
+                {dataRows.map((row, rowIdx) => (
+                  <tr key={rowIdx} className="border-t border-gray-100">
+                    {row.map((cell, cellIdx) => (
+                      <td key={cellIdx} className="px-4 py-3 text-sm text-gray-900">
+                        {parseMarkdown(cell.trim())}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+        tableRows = [];
       }
     };
 
     lines.forEach((line, i) => {
       const trimmedLine = line.trim();
+     
+      if (trimmedLine.match(/^\*\*(To|From|Date|Subject|Re|Betreff|À|De|Oggetto|Para):\*\*/i)) {
+        return;
+      }
+
+      if (trimmedLine.startsWith('|') && trimmedLine.endsWith('|')) {
+          flushList();
+          flushParagraph();
+          const cells = trimmedLine.split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1);
+          tableRows.push(cells);
+          return;
+      } else {
+          flushTable();
+      }
 
       if (trimmedLine.startsWith('### ')) {
         flushList();
+        flushTable();
+        flushParagraph();
         const content = trimmedLine.substring(4);
         const lowerContent = content.toLowerCase();
-        
-        const upKeywords = ['increase', 'stieg', 'hausse', 'aumento', 'stijging', 'wzrost', 'nachfrage'];
-        const downKeywords = ['decrease', 'drop', 'fall', 'rückgang', 'baisse', 'calo', 'daling', 'spadek', 'rückgang'];
-
+       
+        const upKeywords = ['increase', 'stieg', 'hausse', 'aumento', 'stijging', 'wzrost', 'nachfrage', 'up'];
         const isIncrease = upKeywords.some(kw => lowerContent.includes(kw));
+       
+        const downKeywords = ['decrease', 'drop', 'fall', 'rückgang', 'baisse', 'calo', 'daling', 'spadek', 'down'];
         const isDecrease = downKeywords.some(kw => lowerContent.includes(kw));
 
-        const isTakeawaySection = currentH2.toLowerCase().includes('takeaway') || currentH2.toLowerCase().includes('advice') || currentH2.toLowerCase().includes('handlungsempfehlung');
-
-        if (!isTakeawaySection && (isIncrease || isDecrease)) {
-            elements.push(
-              <h3 key={i} className={`text-xl font-bold mt-8 mb-3 ${isIncrease ? 'demand-up' : 'demand-down'}`}>
-                <ChartLineIcon className={`w-5 h-5 mr-2 ${isIncrease ? 'demand-icon-up' : 'demand-icon-down'}`} />
-                {content}
-              </h3>
-            );
-        } else {
-            elements.push(<h3 key={i} className="text-xl font-bold mt-8 mb-3 text-black">{content}</h3>);
-        }
+        elements.push(
+          <h3 key={i} className={`flex items-center text-lg font-bold mt-8 mb-4 ${isIncrease ? 'text-green-700' : isDecrease ? 'text-red-700' : 'text-gray-800'}`}>
+            {(isIncrease || isDecrease) && <ChartLineIcon width={20} height={20} className={`mr-2 flex-shrink-0 ${isIncrease ? 'text-green-600' : 'text-red-600'}`} />}
+            {content}
+          </h3>
+        );
       } else if (trimmedLine.startsWith('## ')) {
         flushList();
+        flushTable();
+        flushParagraph();
         currentH2 = trimmedLine.substring(3);
-        // Removed pt-6 and border-t from h2 to reduce white space for the very first section
-        elements.push(<h2 key={i} className="text-2xl font-extrabold mb-4 text-black first:mt-0 mt-8">{currentH2}</h2>);
-      } else if (trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ')) {
-        listItems.push(trimmedLine.replace(/^[-*]\s*/, ''));
+        elements.push(<h2 key={i} className="text-xl font-extrabold mb-5 text-black first:mt-0 mt-10">{currentH2}</h2>);
+      } else if (trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ') || trimmedLine.match(/^\d+\.\s/)) {
+        const isNumbered = !!trimmedLine.match(/^\d+\.\s/);
+        
+        // If we switch list types, flush the current one
+        if (listItems.length > 0 && isNumbered !== isNumberedList) {
+          flushList();
+        }
+        
+        flushParagraph();
+        flushTable();
+        isNumberedList = isNumbered;
+        listItems.push(trimmedLine.replace(/^([-*]|\d+\.)\s*/, ''));
       } else if (trimmedLine === '') {
         flushList();
+        flushTable();
+        flushParagraph();
       } else {
         flushList();
-        const isActionableHeader = trimmedLine.startsWith('**') && trimmedLine.endsWith('**');
-        elements.push(
-          <p key={i} className={`mb-4 text-black font-medium leading-relaxed ${isActionableHeader ? 'text-lg font-bold' : ''}`}>
-            {trimmedLine}
-          </p>
-        );
+        flushTable();
+        paragraphBuffer.push(trimmedLine);
       }
     });
 
     flushList();
+    flushTable();
+    flushParagraph();
     return elements;
   };
 
@@ -223,52 +405,40 @@ function ReportDisplay({
     <div key={vertical} className="animate-fade-in pb-12">
       <SpecificReportStyles />
       <div id="report-container" className="bg-white min-h-full">
-        {/* Header container is NOT ignored so it shows in PDF */}
-        <div className="md:flex justify-between items-start mb-4 p-8 bg-slate-50 border-b border-slate-200">
-          <div className="flex-grow">
-            <h1 className="text-4xl font-black text-black mb-4">{vertical} {t.reportTitleSuffix}</h1>
-            <div className="flex flex-wrap gap-3 text-sm font-bold">
-               <span className="bg-white px-4 py-2 rounded shadow-sm border border-gray-200 text-primary-700">Market: {marketCode}</span>
-               <span className="bg-white px-4 py-2 rounded shadow-sm border border-gray-200">{getFormattedDateTime()}</span>
+        {/* Header */}
+        <div className="report-header md:flex justify-between items-start mb-2 px-8 py-6 bg-white border-b-2 border-gray-100 gap-4">
+          <div className="flex-shrink flex-grow min-w-0">
+            <h1 className="font-black text-gray-900 leading-tight">
+              <span className="block text-3xl mb-1">{vertical}</span>
+              <span className="block text-xl text-gray-500 font-medium">{t.reportTitleSuffix}</span>
+            </h1>
+            <div className="flex flex-wrap gap-3 text-xs font-bold mt-3 text-gray-400 uppercase tracking-wider">
+               <span>{marketCode} Market</span>
+               <span>•</span>
+               <span>{getFormattedDateTime()}</span>
             </div>
           </div>
-          {/* Buttons are explicitly ignored in PDF */}
-          <div className="flex flex-col md:flex-row md:items-center gap-3 mt-4 md:mt-0 md:ml-4" data-html2canvas-ignore>
-            <button onClick={handleCopy} className="flex items-center justify-center px-5 py-2.5 bg-slate-700 text-white font-bold rounded-lg shadow-md hover:bg-slate-800 transition-all">
-              <CopyIcon className="w-5 h-5 mr-2" /> {isCopied ? t.copiedButton : t.copyButton}
-            </button>
-             <button onClick={handleDownloadPDF} className="flex items-center justify-center px-5 py-2.5 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-700 transition-all">
-              <DownloadIcon className="w-5 h-5 mr-2" /> {t.downloadButton}
-            </button>
-            <button onClick={onUpdateReport} disabled={isLoading} className="flex items-center justify-center px-5 py-2.5 bg-primary-600 text-white font-bold rounded-lg shadow-md hover:bg-primary-700 transition-all">
-              <RefreshIcon className={`w-5 h-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} /> {t.updateButton}
-            </button>
+          <div className="flex flex-col items-end gap-3 flex-shrink-0">
+            <EamsTextLogo className="mb-1" width={120} height={48} />
+            <div className="flex flex-row items-center gap-1.5" data-html2canvas-ignore>
+              <button onClick={handleCopy} className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded text-xs transition-colors"><CopyIcon width={14} height={14} className="mr-1 inline align-text-bottom" /> {isCopied ? t.copiedButton : t.copyButton}</button>
+              <button onClick={handleDownloadPDF} className="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded text-xs transition-colors"><DownloadIcon width={14} height={14} className="mr-1 inline align-text-bottom" /> {t.downloadButton}</button>
+              <button onClick={onUpdateReport} disabled={isLoading} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded text-xs transition-colors"><RefreshIcon width={14} height={14} className={`mr-1 inline align-text-bottom ${isLoading ? 'animate-spin' : ''}`} /> {t.updateButton}</button>
+            </div>
           </div>
         </div>
-
-        {/* This PDF-only header is now redundant as we show the main header, but keeping small logo for branding */}
-        <div className="hidden pdf-only flex justify-end items-center px-8 py-4 border-b border-slate-100">
-           <img src="/images/sidebar-menu.png" alt="eAMS" className="h-10" />
-        </div>
-
-        <article className="max-w-none bg-white px-8 md:px-16 py-4 mx-auto text-black font-medium text-lg leading-relaxed max-w-5xl">
+       
+        <article className="max-w-none bg-white px-8 md:px-12 py-6 mx-auto">
           {renderFormattedText(result.text)}
         </article>
 
         {result.sources.length > 0 && (
-          <div className="mt-12 px-8 pb-12 max-w-5xl mx-auto">
-            <h2 className="text-2xl font-black text-black mb-8 flex items-center">
-              <GlobeIcon className="w-7 h-7 mr-3 text-primary-500" />
-              {t.sourcesTitle}
-            </h2>
-            <div className="bg-slate-50 p-10 rounded-2xl border border-gray-200 shadow-inner">
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="source-section mt-8 px-8 pb-8 mx-auto border-t border-gray-100 pt-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center"><GlobeIcon width={22} height={22} className="mr-2 text-gray-400" />{t.sourcesTitle}</h2>
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {result.sources.map((source, index) => (
-                  source.web && <li key={index} className="flex items-start bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:border-primary-300 transition-colors">
-                    <a href={source.web.uri} target="_blank" rel="noopener noreferrer" className="text-primary-700 hover:text-primary-900 transition-colors break-words font-bold text-sm leading-tight">
-                      {source.web.title || source.web.uri}
-                    </a>
-                  </li>
+                  source.web && <li key={index} className="flex items-center text-xs"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2"></span><a href={source.web.uri} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 truncate underline decoration-gray-300">{source.web.title || source.web.uri}</a></li>
                 ))}
               </ul>
             </div>
@@ -280,36 +450,15 @@ function ReportDisplay({
   );
 }
 
+
 export function ContentDisplay({
-  isLoading,
-  result,
-  error,
-  vertical,
-  onUpdateReport,
-  translations,
-  isEnglishMode,
-  onToggleLanguage,
-  marketCode
+  isLoading, result, error, vertical, onUpdateReport, translations, isEnglishMode, onToggleLanguage, marketCode
 }: ContentDisplayProps) {
-  const showLanguageToggle = !['UK', 'US', 'AU'].includes(marketCode);
+  const showLanguageToggle = !['UK', 'US', 'AU', 'IE', 'CA', 'SG', 'MY', 'PH', 'HK'].includes(marketCode);
   return (
     <main className="w-full md:w-3/4 lg:w-4/5 p-0 bg-slate-100 overflow-y-auto h-screen relative">
-      {showLanguageToggle && (
-        <div className="absolute top-6 right-6 z-10" data-html2canvas-ignore>
-          <button onClick={onToggleLanguage} className="flex items-center bg-white px-5 py-2.5 rounded-full shadow-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-all active:scale-95">
-            <GlobeIcon className="w-5 h-5 mr-2 text-primary-500" /> {isEnglishMode ? "Switch to Native" : "Switch to English"}
-          </button>
-        </div>
-      )}
-      {isLoading && !result ? (
-        <LoadingState vertical={vertical!} message={translations.loadingMessage} />
-      ) : error ? (
-        <div className="flex items-center justify-center h-full"><div className="bg-red-50 p-10 rounded-2xl border border-red-200 text-center max-w-lg shadow-xl"><h3 className="text-2xl font-black text-red-700 mb-4">{translations.errorMessage}</h3><p className="text-red-600 font-semibold">{error}</p></div></div>
-      ) : result && vertical ? (
-        <ReportDisplay result={result} vertical={vertical} isLoading={isLoading} onUpdateReport={onUpdateReport} t={translations} marketCode={marketCode} />
-      ) : (
-        <InitialState t={translations} />
-      )}
+      {showLanguageToggle && (<div className="absolute top-6 right-6 z-10" data-html2canvas-ignore><button onClick={onToggleLanguage} className="bg-white px-5 py-2.5 rounded-full shadow-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-50"><GlobeIcon width={18} height={18} className="mr-2 inline text-primary-500" /> {isEnglishMode ? "Switch to Native" : "Switch to English"}</button></div>)}
+      {isLoading && !result ? (<LoadingState vertical={vertical!} message={translations.loadingMessage} />) : error ? (<div className="flex items-center justify-center h-full"><div className="bg-red-50 p-10 rounded-2xl border border-red-200 text-center max-w-lg shadow-xl"><h3 className="text-2xl font-black text-red-700 mb-4">{translations.errorMessage}</h3><p className="text-red-600 font-semibold">{error}</p></div></div>) : result && vertical ? (<ReportDisplay result={result} vertical={vertical} isLoading={isLoading} onUpdateReport={onUpdateReport} t={translations} marketCode={marketCode} />) : (<div className="flex flex-col items-center justify-center h-full text-center p-8"><div className="w-full max-w-lg"><img src="/images/welcome-page.png" alt="eAMS Marketpulse" className="w-full h-auto" /></div><h2 className="text-3xl font-bold mt-4">{translations.welcomeTitle}</h2><p className="mt-4 text-xl font-medium">{translations.welcomeIntro}</p><p className="mt-2 text-lg">{translations.welcomeInstruction}</p></div>)}
     </main>
   );
 }

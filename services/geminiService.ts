@@ -1,3 +1,4 @@
+
 import { GoogleGenAI } from "@google/genai";
 import type { GroundingChunk } from '../types';
 import { getCurrentQuarterInfo } from '../utils';
@@ -8,70 +9,69 @@ export const fetchVerticalInsights = async (vertical: string, forceEnglish: bool
   try {
     const { currentQuarter, nextQuarter, currentYear, nextQuarterYear } = getCurrentQuarterInfo();
     const market = getCurrentMarket();
-    
+   
     const t = forceEnglish ? getTranslations('UK') : getTranslations(market.code);
     const targetLanguage = forceEnglish ? 'English' : market.language;
-    
+   
     console.log(`Fetching insights for: ${vertical} (${market.code}). Language: ${targetLanguage}...`);
 
     const prompt = `
-      Act as a senior e-commerce strategy consultant for eBay's ${market.name} market. 
+      Act as a senior e-commerce strategy consultant for eBay's ${market.name} market.
       Provide a high-level, professional strategic report for sellers in the "${vertical}" vertical.
       The report must be written in ${targetLanguage}.
-      
-      **EBAY ADVERTISING NOMENCLATURE & REFERENCING:**
-      Only recommend the following products if they are strategically relevant to the "${vertical}" vertical.
-      - **Promoted Listings Priority (PLP)**
-      - **Promoted Listings General (PLG)**
-      - **Promoted Stores (PS)**
-      - **Promoted Offsite (PO)**
+     
+      **STRICT PROHIBITION - DO NOT INCLUDE:**
+      - NO administrative headers like "To:", "From:", "Date:", or "Subject:".
+      - NO professional email preambles or correspondence placeholders.
+      - Start IMMEDIATELY with the narrative Executive Summary header (##).
+      - NEVER reference a "January 13, 2026 update", "last year's update", or any specific fabricated timeline for "advertising suite changes". 
+      - DO NOT invent historical or future technical overhaul events. Focus ONLY on existing, established product features.
 
-      *Referencing Rules:* 1. Introduce the full name and abbreviation together ONLY ONCE (e.g., "Promoted Listings General (PLG)"). 
-      2. After the first mention, use either the full name OR the abbreviation, but never both in parentheses.
-      3. CRITICAL: Never use the term "halo" or "halo attribution" in relation to PLG. This terminology is deprecated. Focus on "Total Advertising Cost of Sale" (TACOS) and "ad rate caps" instead.
+      **EBAY ADVERTISING NOMENCLATURE:**
+      Recommend these ONLY if relevant: **Promoted Listings Priority (PLP)**, **Promoted Listings General (PLG)**, **Promoted Stores (PS)**, **Promoted Offsite (PO)**.
+      Rule: Introduce full name and abbreviation ONCE (e.g., "Promoted Listings General (PLG)"), then use one or the other. NEVER use "halo" in relation to PLG. Focus on TACOS and ad rate caps. 
+      Focus on strategic implementation of these products as they currently exist.
 
       **SECTION SPECIFIC INSTRUCTIONS:**
-      - **Executive Summary:** Write this as a professional, compelling narrative. Do NOT use administrative headers like "Date:", "To:", "From:", or "Subject:". Synthesize market opportunities and macro-economic factors immediately.
-      - **Demand Lists:** Provide extensive bulleted lists for "Expected to increase in demand" and "Expected to drop in demand". Aim for at least 8 specific items for Increase and 6 for Decrease. Provide strategic context for each item.
-      - **Key Takeaways & Actionable Advice:** This section must be SUBSTANTIAL and expert-level. Provide concrete strategic tasks. Every takeaway MUST link a specific vertical trend to the optimal use of eBay ad products (PLP, PLG, PS, or PO). For example, explain when to switch from PLG to PLP for peak demand, or how to use PS to build brand loyalty during high-traffic periods.
+      - **Executive Summary:** A compelling, professional narrative synthesis of market opportunities.
+      - **Demand Lists:** Use "${t.subHeadingIncrease}" and "${t.subHeadingDecrease}" as headers. Provide substantial lists (8+ increase, 6+ decrease) as Markdown bullet points.
+      - **Consumer Buying Triggers (Buyer Influencers):** Provide 4-6 distinct factors driving purchase decisions. 
+        MANDATORY FORMATTING: 
+        1. Each factor MUST be a separate item in a Markdown numbered list (1., 2., 3.).
+        2. You MUST put a BLANK LINE between every numbered item. 
+        3. Never put two numbered items on the same line or in the same paragraph.
+      - **Key Takeaways:** Substantial, expert-level advice linking trends to eBay ad products using a bulleted list.
+      - **Keywords Section:** A detailed Markdown TABLE with columns: Category, Primary Keywords, Secondary/Trending Keywords.
 
-      **GROUNDING & SOURCES REQUIREMENT:**
-      - Use Google Search to find current pricing, volume trends, and competitor activity.
-      - You MUST include enough verified information that grounding chunks are generated. The report is incomplete without a list of sources.
+      **GROUNDING & SOURCES:**
+      Use Google Search for current data. Ensure grounding chunks are generated.
 
-      **STRICT OUTPUT FORMAT RULES:**
-      1. Start IMMEDIATELY with the first section header (Markdown H2 / ##).
-      2. Use Markdown H2 (##) for Main Sections.
-      3. Use Markdown H3 (###) for the Increase/Decrease demand lists specifically.
-      4. For the Key Takeaways section, use numbered lists or bold paragraph headers to ensure it is substantial and easy to read.
+      **FORMAT:**
+      1. Start with ## ${t.sectionExecutiveSummary}.
+      2. Use ## for main sections, ### for sub-sections.
+      3. Use standard Markdown | table | format for the Keywords section.
 
-      The report structure:
+      Structure:
       ## ${t.sectionExecutiveSummary}
       ## ${t.sectionMarketHealth}
       ## ${t.sectionCurrentQuarter} (Q${currentQuarter} ${currentYear})
-          ### ${t.subHeadingIncrease}
-          ### ${t.subHeadingDecrease}
+         ### ${t.subHeadingIncrease}
+         ### ${t.subHeadingDecrease}
       ## ${t.sectionLookAhead} Q${nextQuarter} ${nextQuarterYear}
-          ### ${t.subHeadingIncrease}
-          ### ${t.subHeadingDecrease}
+         ### ${t.subHeadingIncrease}
+         ### ${t.subHeadingDecrease}
       ## ${t.sectionBuyerInfluencers}
       ## ${t.sectionKeyTakeaways}
       ## ${t.sectionKeywords}
     `;
 
-    // Updated to use the correct Vite environment variable syntax
-    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
-    
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+   
     const response = await ai.models.generateContent({
-      model: "gemini-3-pro-preview", 
+      model: "gemini-3-flash-preview",
       contents: prompt,
       config: {
         tools: [{googleSearch: {}}],
-        // Updated 'thinkingLevel' for Gemini 3 compatibility to resolve TS2353
-        thinkingConfig: { 
-          thinkingLevel: 'high',
-          includeThoughts: true 
-        }
       },
     });
 
@@ -91,7 +91,7 @@ export const fetchVerticalInsights = async (vertical: string, forceEnglish: bool
         }
       }
     }
-    
+   
     return { text, sources };
   } catch (error: any) {
     console.error("Error fetching insights:", error);

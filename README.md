@@ -1,8 +1,7 @@
-
 # eAMS Marketpulse
 
-![Build Status](https://github.corp.ebay.com/ngeoghegan/eams-marketpulse/actions/workflows/main.yml/badge.svg?branch=develop&event=push)
-![Gemini AI](https://img.shields.io/badge/Gemini_2.5_Flash-8E75B2?style=flat-square&logo=googlegemini&logoColor=white)
+![Build Status](https://github.com/fullegan/eams-marketpulse/actions/workflows/main.yml/badge.svg?branch=main)
+![Gemini AI](https://img.shields.io/badge/Gemini_3_Flash-8E75B2?style=flat-square&logo=googlegemini&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
 
@@ -11,9 +10,9 @@
 ## 1. Project Overview
 
 * **Goal:** Empower sellers with actionable insights on trends, seasonality, and buyer behavior.
-* **Key Feature:** Generates reports on-demand using the **Gemini 2.5 Flash** model, grounded with real-time Google Search data.
+* **Key Feature:** Generates reports on-demand using the **Gemini 3 Flash** model, grounded with real-time Google Search data.
 * **Architecture:** Single Page Application (SPA) with **Zero Backend**. All logic runs in the browser.
-* **Localization:** Fully localized UI and AI Report structure for **UK, US, DE, FR, IT, and AU**.
+* **Localization:** Fully localized UI and AI Report structure for **UK, US, DE, FR, IT, AU, and more**.
 
 ## 2. Technology Stack
 
@@ -37,6 +36,7 @@ This project uses a **"Build-Time Configuration"** strategy. You do not need dif
 * **FR** (France)
 * **IT** (Italy)
 * **AU** (Australia)
+* **Global Support:** Supports CA, ES, NL, AT, IE, PL, CH, BE, HK, MY, PH, SG.
 
 ### How Localization Works
 1. **Environment Variable:** The build system looks for `VITE_MARKET_CODE`.
@@ -50,11 +50,11 @@ This project uses a **"Build-Time Configuration"** strategy. You do not need dif
 
 | File | Purpose | When to Edit |
 | :--- | :--- | :--- |
-| `src/config.ts` | Market Definitions & Env Var logic. | To add a new country (e.g., Spain). |
-| `src/constants.ts` | **The Translation Database.** | To fix a typo in the UI or add a new Vertical. |
-| `src/services/geminiService.ts` | **The AI Brain.** Handles Prompt Engineering. | To change the *tone* or *content* of the report. |
-| `src/components/ContentDisplay.tsx` | Main Report View. | To change the visual layout of the report. |
-| `src/components/Sidebar.tsx` | Navigation Menu. | To change the logo or menu styling. |
+| `config.ts` | Market Definitions & Env Var logic. | To add a new country (e.g., Spain). |
+| `constants.ts` | **The Translation Database.** | To fix a typo in the UI or add a new Vertical. |
+| `services/geminiService.ts` | **The AI Brain.** Handles Prompt Engineering. | To change the *tone* or *content* of the report. |
+| `components/ContentDisplay.tsx` | Main Report View. | To change the visual layout of the report. |
+| `components/Sidebar.tsx` | Navigation Menu. | To change the logo or menu styling. |
 | `vite.config.ts` | Build Configuration. | To debug deployment issues via Diagnostic Mode. |
 
 ---
@@ -65,20 +65,24 @@ To run this project on your machine, ensure you have **Node.js (v18+)** installe
 
 1. **Clone & Install:**
    ```bash
-   git clone [https://github.corp.ebay.com/ngeoghegan/eams-marketpulse.git](https://github.corp.ebay.com/ngeoghegan/eams-marketpulse.git)
+   git clone https://github.com/fullegan/eams-marketpulse.git
    cd eams-marketpulse
    npm install
+   ```
 
-2. Environment Setup: Create a .env.local file and add your VITE_API_KEY.
+2. **Environment Setup:** Create a `.env.local` file and add your `VITE_API_KEY`.
 
-3. Run: npm run dev
-   
+3. **Run:**
+   ```bash
+   npm run dev
+   ```
+
 ## 6. Deployment Guide (Vercel)
 
 To deploy specific country versions, create separate **Projects** in Vercel connected to the **Same GitHub Repository**.
 
 ### Step 1: Push Code
-Push your latest code to the `main` branch on the eBay GitHub.
+Push your latest code to the `main` or `develop` branch on GitHub.
 
 ### Step 2: Configure Environment Variables
 For **each** project, go to **Settings > Environment Variables** and add:
@@ -108,7 +112,7 @@ We welcome contributions from the eAMS team! To maintain stability, please follo
 
 ### "The generative AI API is disabled for this Google Cloud Project"
 * **Cause:** The API Key belongs to a project where the Gemini API is not enabled.
-* **Fix:** Ask IT to enable the "Generative Language API" in the Google Cloud Console.
+* **Fix:** Enable the "Generative Language API" in the Google Cloud Console.
 
 ### "CRITICAL: No API Key found"
 * **Cause:** The Environment Variable is missing in Vercel.
@@ -120,4 +124,4 @@ We welcome contributions from the eAMS team! To maintain stability, please follo
 
 ---
 © 2025 eBay Advertising Managed Services (eAMS)  
-"Last updated: [19/12/2026:18:18]"
+"Last updated: [30/12/2025:09:35]"
