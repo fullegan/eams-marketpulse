@@ -1,6 +1,6 @@
 # eAMS Marketpulse
 
-![Build Status](https://github.com/fullegan/eams-marketpulse/actions/workflows/main.yml/badge.svg?branch=main)
+![Build Status](https://github.com/fullegan/eams-marketpulse/actions/workflows/main.yml/badge.svg)
 ![Gemini AI](https://img.shields.io/badge/Gemini_3_Flash-8E75B2?style=flat-square&logo=googlegemini&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
@@ -124,4 +124,4 @@ We welcome contributions from the eAMS team! To maintain stability, please follo
 
 ---
 © 2025 eBay Advertising Managed Services (eAMS)  
-"Last updated: [30/12/2025:09:35]"
+"Last updated: [30/12/2025:12:00]"
