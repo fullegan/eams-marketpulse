@@ -1,4 +1,3 @@
-
 // Add React to the import list to resolve namespace errors for React.ReactNode
 import React, { useState } from 'react';
 import type { ApiResult, UiTranslations } from '../types';
@@ -456,9 +455,49 @@ export function ContentDisplay({
 }: ContentDisplayProps) {
   const showLanguageToggle = !['UK', 'US', 'AU', 'IE', 'CA', 'SG', 'MY', 'PH', 'HK'].includes(marketCode);
   return (
-    <main className="w-full md:w-3/4 lg:w-4/5 p-0 bg-slate-100 overflow-y-auto h-screen relative">
+    <main className="w-full md:w-3/4 lg:w-4/5 p-0 bg-white overflow-y-auto h-screen relative">
       {showLanguageToggle && (<div className="absolute top-6 right-6 z-10" data-html2canvas-ignore><button onClick={onToggleLanguage} className="bg-white px-5 py-2.5 rounded-full shadow-lg border border-gray-200 text-sm font-bold text-gray-700 hover:bg-gray-50"><GlobeIcon width={18} height={18} className="mr-2 inline text-primary-500" /> {isEnglishMode ? "Switch to Native" : "Switch to English"}</button></div>)}
-      {isLoading && !result ? (<LoadingState vertical={vertical!} message={translations.loadingMessage} />) : error ? (<div className="flex items-center justify-center h-full"><div className="bg-red-50 p-10 rounded-2xl border border-red-200 text-center max-w-lg shadow-xl"><h3 className="text-2xl font-black text-red-700 mb-4">{translations.errorMessage}</h3><p className="text-red-600 font-semibold">{error}</p></div></div>) : result && vertical ? (<ReportDisplay result={result} vertical={vertical} isLoading={isLoading} onUpdateReport={onUpdateReport} t={translations} marketCode={marketCode} />) : (<div className="flex flex-col items-center justify-center h-full text-center p-8"><div className="w-full max-w-lg"><img src="/images/welcome-page.png" alt="eAMS Marketpulse" className="w-full h-auto" /></div><h2 className="text-3xl font-bold mt-4">{translations.welcomeTitle}</h2><p className="mt-4 text-xl font-medium">{translations.welcomeIntro}</p><p className="mt-2 text-lg">{translations.welcomeInstruction}</p></div>)}
+      {isLoading && !result ? (
+        <LoadingState vertical={vertical!} message={translations.loadingMessage} />
+      ) : error ? (
+        <div className="flex items-center justify-center h-full">
+          <div className="bg-red-50 p-10 rounded-2xl border border-red-200 text-center max-w-lg shadow-xl">
+            <h3 className="text-2xl font-black text-red-700 mb-4">{translations.errorMessage}</h3>
+            <p className="text-red-600 font-semibold">{error}</p>
+          </div>
+        </div>
+      ) : result && vertical ? (
+        <ReportDisplay result={result} vertical={vertical} isLoading={isLoading} onUpdateReport={onUpdateReport} t={translations} marketCode={marketCode} />
+      ) : (
+        <div className="flex flex-col items-center justify-center min-h-full text-center p-8 animate-fade-in">
+          {/* Logo Card Section - Slightly shrinked for neatness */}
+          <div className="bg-white p-10 md:p-12 rounded-[2.5rem] shadow-2xl shadow-slate-200/60 mb-6 w-full max-w-xl border border-slate-50">
+            <img 
+              src="/images/welcome-page.png" 
+              alt="eAMS Marketpulse" 
+              className="w-full h-auto object-contain mx-auto transition-transform hover:scale-[1.01] duration-500" 
+            />
+          </div>
+          
+          {/* Welcome Text Section - Reduced fonts and margins */}
+          <div className="max-w-2xl px-4">
+            <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight mb-2">
+              {translations.welcomeTitle}
+            </h2>
+            <p className="text-base md:text-lg font-semibold text-slate-500 mb-6 leading-relaxed">
+              {translations.welcomeIntro}
+            </p>
+          </div>
+
+          {/* Call to Action Banner - Compacted and centered neatly */}
+          <div className="bg-primary-50 border border-primary-100 px-8 py-3.5 rounded-xl flex items-center gap-4 text-primary-700 font-black uppercase tracking-[0.1em] shadow-sm hover:shadow-md transition-shadow">
+            <span className="text-xl font-light">←</span>
+            <span className="text-sm md:text-base">
+              {translations.welcomeInstruction}
+            </span>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
