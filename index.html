@@ -8,6 +8,10 @@
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
+      // Global process shim for browser compatibility with environment-injected variables
+      window.process = window.process || { env: {} };
+      window.process.env = window.process.env || {};
+      
       tailwind.config = {
         theme: {
           extend: {
@@ -54,10 +58,10 @@
         background: #64748b;
       }
     </style>
- 
+  
 </head>
   <body class="bg-slate-100">
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>

@@ -44,8 +44,8 @@ export const fetchVerticalInsights = async (vertical: string, forceEnglish: bool
       - **Keywords Section:** A detailed Markdown TABLE with columns: Category, Primary Keywords, Secondary/Trending Keywords.
 
       **GROUNDING & SOURCES:**
-      Use Google Search for current data. Ensure grounding chunks are generated.
-
+      Use Google Search for current data. Ensure grounding chunks are generated. Do NOT include sources that were published more than 18 months ago as we are only interested in the most up-to-date information.
+      Identify the publication date of all sources and add the date alongside the source name at the end of the report.
       **FORMAT:**
       1. Start with ## ${t.sectionExecutiveSummary}.
       2. Use ## for main sections, ### for sub-sections.
